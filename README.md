@@ -103,6 +103,16 @@ Full roster, statuses and the format contract: [agents/README.md](./agents/READM
 - **Google in one click.** A shared House Label app so connecting Drive is a "Sign in with Google" button, not an 8-minute setup.
 - **Front-end.** Create a web version that any non-tech users can easily use (think of Hubspot or similar web apps)
 
+## See an example
+
+Marie-Gold used House Label for her single « banale baddie » (October 2026).
+Build her campaign in your Drive with the label's own template — the Plan
+sheet, the budget, the useful links, the lyrics, the credits and the media:
+
+```bash
+houselabel example marie-gold
+```
+
 ## Acknowledgements
 
 The knowledge in these agents was not invented here. People from the Quebec
