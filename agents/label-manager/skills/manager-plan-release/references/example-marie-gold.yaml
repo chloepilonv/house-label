@@ -1,0 +1,181 @@
+# One real campaign — Marie-Gold's single « banale baddie », October 2026.
+#
+# Two readers:
+#   - the label manager reads it as its worked example before it plans a release
+#     (manager-plan-release SKILL.md, Guidelines);
+#   - `houselabel example --marie-gold` feeds it to the SAME Drive template every
+#     artist gets (buildWorkspace in engine/google/workspace.ts), under its own
+#     root folder. Same shape as the artist database, so the template cannot tell.
+#
+# It is an example, not a template: its dates, vendors and links are hers.
+# No contacts (press and promotion own those), no media files (not yet).
+
+root: "House Label — Marie-Gold [template]"
+
+profile:
+  artist_name: Marie-Gold
+  preferred_locale: fr
+
+platforms:
+  - { platform: spotify, url: "https://open.spotify.com/artist/5IIpjqhAKTXUVPh9ERQ24G" }
+  - { platform: apple_music, url: "https://music.apple.com/us/artist/marie-gold/1359590948" }
+  - { platform: deezer, url: "https://www.deezer.com/artist/14765485" }
+  - { platform: bandcamp, url: "https://marie-gold.bandcamp.com" }
+  - { platform: instagram, url: "https://instagram.com/marie.goldgold" }
+  - { platform: tiktok, url: "https://tiktok.com/@marie.goldgold" }
+  - { platform: facebook, url: "https://www.facebook.com/marie.goldgoldmusique/" }
+  - { platform: youtube, url: "https://www.youtube.com/@Marie-Gold" }
+  - { platform: website, url: "https://marie-gold.com" }
+
+project:
+  title: banale baddie
+  project_type: single
+  street_date: 2026-10-23
+
+release:
+  title: banale baddie
+  release_type: single
+  release_date: 2026-10-23
+  upc: "885000673917"
+  label: Marie-Gold
+  distributor: CD Baby
+  smart_link_url: https://ffm.to/banalebaddie
+  p_year: 2026
+  p_owner: Marie-Gold
+  c_year: 2026
+  c_owner: Chloé Pilon Vaillancourt
+
+songs:
+  - title: banale baddie
+    isrc: CAEHU2600001
+    duration_seconds: 175
+    genre: Folk
+    language: French
+    lyrics: |
+      J'pensais être baddie
+      Mais je suis que banale
+      C'est même pas si facile
+      D'avoir une vie normale
+
+
+      Trouver un emploi
+      Une paie à chaque mois
+      Avoir des assurances
+      Pour en gagner un peu
+      Se dire qu'avec le temps
+      Enfin tout ira mieux
+      Pour quand quitteront nos parents
+      Comme on en a que deux
+
+
+      J'pensais être baddie
+      Mais je suis que banale
+
+
+      Trouver un amoureux
+      Enfin quelqu'un de fiable
+      Pour partager des voeux
+      De Paris à Montréal
+      Vouloir des enfants
+      Pour leur chanter un peu
+      Une brise dans le vent
+      Où enfin être heureux
+      Et comme je vois le temps
+      Me file entre les doigts
+      J'ai fait tous mes devoirs
+      Mais pas toujours ce qu'il se doit
+      Et j'demande pas grand chose
+      Que les étoiles comme toit
+      Un peu d'argent, être au chaud
+      Et moins dans tous mes états
+      J'pensais être baddie
+      Mais je suis que banale
+      C'est même pas si facile
+      D'avoir une vie normale
+
+# Release links that are not a platform profile.
+links:
+  - { category: listen, label: "banale baddie — Spotify (track)", url: "https://open.spotify.com/track/7K5AQ7Zj5wLvsuzlHVqUL0" }
+  - { category: listen, label: "banale baddie — Spotify (single)", url: "https://open.spotify.com/album/3vbqtFvS2CbyfqIL5m1LJy" }
+  - { category: listen, label: "Amazon Music", url: "https://music.amazon.com/artists/B07BDNNKF5" }
+  - { category: listen, label: "Tidal", url: "http://www.tidal.com/artist/10807227" }
+  - { category: video, label: "banale baddie — visualizer (YouTube)", url: "https://youtu.be/ktA9ehAwEzU" }
+
+# Digital-marketing tasks that made something: one Digital-Contents/ folder each.
+content:
+  - { due_date: 2026-10-06, title: "Annonces pré-sauvegarde", format: visuels }
+  - { due_date: 2026-10-13, title: "Lyric reels batch 1", format: reel }
+  - { due_date: 2026-10-23, title: "Annonces disponible maintenant", format: visuels }
+  - { due_date: 2026-10-27, title: "Lyrics post", format: post }
+
+# The Plan sheet: Date · Action · Agent · Status · Source.
+# Agent = the department folder under agents/, label-manager when none owns it.
+# Status = Done · To do · Won't do. Never an amount.
+plan:
+  - ["2026-09-15", "Record songs", "label-manager", "Done", ""]
+  - ["2026-09-16", "Mix and master songs", "label-manager", "Done", "Charivari Records"]
+  - ["2026-10-02", "Upload song on distributor", "distribution", "Done", "https://www.cdbaby.com"]
+  - ["2026-10-06", "Finish the presskit", "presskit", "Done", "Artist/Presskit"]
+  - ["2026-10-06", "Submit song for radio tracking", "promotion", "Done", "https://www.45tours.ca"]
+  - ["2026-10-07", "Write the press release", "press", "Done", "Press/Communiqué de presse — banale baddie"]
+  - ["2026-10-07", "Make the radio folder (MP3, WAV, cover, press release)", "promotion", "Done", "Google Drive"]
+  - ["2026-10-07", "Pitch returning press", "press", "Done", "Press/Contacts presse"]
+  - ["2026-10-07", "Announce the single", "digital-marketing", "Done", "https://www.instagram.com/marie.goldgold/p/DeMxNF5AaRx/"]
+  - ["2026-10-08", "Shoot campaign content", "label-manager", "Done", "Digital-Contents/Shot list — tournage du 8 octobre"]
+  - ["2026-10-09", "Pitch Spotify for Artists", "promotion", "Done", "https://artists.spotify.com"]
+  - ["2026-10-11", "Set up pre-save link", "digital-marketing", "Done", "https://ffm.to/banalebaddie"]
+  - ["2026-10-11", "Upload song on !earshot Distro (campus radio)", "promotion", "Done", "https://www.earshot-online.com"]
+  - ["2026-10-11", "Pitch radios universitaires", "promotion", "Done", "Press/Contacts radio et playlists"]
+  - ["2026-10-11", "Pitch radios communautaires", "promotion", "Done", "Press/Contacts radio et playlists"]
+  - ["2026-10-11", "Add lyrics on Apple Music", "distribution", "Done", "https://artists.apple.com"]
+  - ["2026-10-11", "Upload Spotify Canvas", "digital-marketing", "Done", "https://artists.spotify.com"]
+  - ["2026-10-12", "Claim Apple Music for Artists", "distribution", "Done", "https://artists.apple.com"]
+  - ["2026-10-13", "Post teaser for single", "digital-marketing", "Done", "https://www.instagram.com/marie.goldgold/reel/Decx_PNyYSp/"]
+  - ["2026-10-13", "Update all platform profiles", "digital-marketing", "Done", "Spotify · YouTube · Instagram · Bandcamp"]
+  - ["2026-10-13", "Pitch Radio-Canada shows", "press", "Done", "Press/Contacts presse"]
+  - ["2026-10-13", "Edit 10 lyric reels", "digital-marketing", "Done", "Digital-Contents/2026-10-13_Lyric-reels-batch-1 (reel)"]
+  - ["2026-10-14", "Pitch Quebec media", "press", "Done", "Press/Contacts presse"]
+  - ["2026-10-14", "Pitch new blogs", "press", "Done", "Press/Contacts presse"]
+  - ["2026-10-16", "Follow up returning press", "press", "Done", "Press/Contacts presse"]
+  - ["2026-10-20", "Post 3-day countdown", "digital-marketing", "Done", "https://www.instagram.com/marie.goldgold/reel/DeuAOTsgp0K/"]
+  - ["2026-10-22", "Follow up Radio-Canada shows, Quebec media and blogs", "press", "Done", "Press/Contacts presse"]
+  - ["2026-10-23", "Release the single", "distribution", "Done", "https://ffm.to/banalebaddie"]
+  - ["2026-10-23", "Publish the visualizer", "digital-marketing", "Done", "https://youtu.be/ktA9ehAwEzU"]
+  - ["2026-10-23", "Post the visualizer on Instagram", "digital-marketing", "Done", "https://www.instagram.com/marie.goldgold/reel/De1-8wHgFAK/"]
+  - ["2026-10-23", "Start YouTube ads campaign (7 days, ends Oct 30)", "digital-marketing", "Done", "https://youtu.be/ktA9ehAwEzU"]
+  - ["2026-10-23", "Launch playlist campaign", "promotion", "Done", "https://groover.co"]
+  - ["2026-10-23", "Pitch Amazon Music for Artists", "promotion", "Done", "https://artists.amazonmusic.com/pitch"]
+  - ["2026-10-23", "Send release-day links to press", "press", "Done", "Press/Contacts presse"]
+  - ["2026-10-23", "Register the song at SOCAN", "rights", "To do", "https://www.socan.com"]
+  - ["2026-10-23", "Declare the release to MétaMusique", "rights", "To do", "https://www.metamusique.ca"]
+  - ["2026-10-24", "Run Meta ads for the single", "digital-marketing", "Done", "https://adsmanager.facebook.com"]
+  - ["2026-10-25", "Post release announcement", "digital-marketing", "Done", "https://www.instagram.com/marie.goldgold/p/De1pJQ2g7uG/"]
+  - ["2026-10-25", "Update the presskit for the single", "presskit", "Done", "Artist/Presskit"]
+  - ["2026-10-25", "Pitch magazines", "press", "Done", "Press/Contacts presse"]
+  - ["2026-10-26", "Submit lyrics on Musixmatch", "distribution", "To do", "https://www.musixmatch.com"]
+  - ["2026-10-27", "Post lyrics carousel", "digital-marketing", "Done", "https://www.instagram.com/marie.goldgold/p/De_-6kglXpq/"]
+  - ["2026-10-27", "Post personal story", "digital-marketing", "Done", "https://www.instagram.com/marie.goldgold/p/De7n5yOASZ_/"]
+  - ["2026-10-29", "Post robot arm video", "digital-marketing", "Done", "https://www.instagram.com/marie.goldgold/reel/DfFIJ6ygqsK/"]
+
+# The Budget sheet: one object per row, keyed like the template's columns
+# (BUDGET_TABS in engine/google/budget-sheet.ts).
+budget:
+  expected:
+    - { release: "Projet de guitare abandonné", step: "Presskit and press release finished", department: "Presskit", floor: "$0 CAD", aim: "$0 CAD", full: "$0 CAD", basis: "the label's own presskit desk builds it — Google Slides and a PDF, no vendor", sources: "release-path" }
+    - { release: "Projet de guitare abandonné", step: "Radio serviced", department: "Promotion", floor: "$28 CAD", aim: "$300 CAD", full: "$300 CAD + $295 USD", basis: "4 songs: !earshot at $7 a song to campus and community radio is the floor; 45tours.ca is how francophone radio receives a release and is the decent run; a commercial format through Yangaroo ($295 USD, reported apart) is the full one. Delivery buys no airplay", sources: "earshot-cost · 45tours · yangaroo-pricing" }
+    - { release: "Projet de guitare abandonné", step: "Press and media pitched", department: "Press Agent", floor: "$0 CAD", aim: "$0 CAD", full: "$0 CAD", basis: "drafted and tracked by the label's publicist desk; an outside publicist is four figures and no independent benchmark exists, so no number is printed for one", sources: "marketing-playbook · release-path" }
+    - { release: "Projet de guitare abandonné", step: "Distributor chosen", department: "Distribution", floor: "$19 USD", aim: "$24.99 USD", full: "$24.99 USD", basis: "the two cheapest flat subscriptions our distribution desk holds, per year, 0% cut. Per-release and percentage models cost differently over your own revenue — Distribution ranks them; this is only the range", sources: "distribution-how · distrokid-pricing" }
+    - { release: "Projet de guitare abandonné", step: "Editorial pitch sent to Spotify", department: "Promotion", floor: "$0 CAD", aim: "$0 CAD", full: "$0 CAD", basis: "the editorial pitch is filed from Spotify for Artists at no charge; nothing sold anywhere replaces it", sources: "spotify-pitch" }
+    - { release: "Projet de guitare abandonné", step: "Marketing campaign starts", department: "Marketing", floor: "$0 CAD", aim: "$210 CAD", full: "$670 CAD", basis: "42 days from campaign start to two weeks after release: organic only is the floor (Meta publishes no minimum); Meta at $5 a day across the window is the decent run; $10 a day plus Spotify Ads Manager's $250 minimum is the full one. Marketing sizes the real split", sources: "meta-ads-minimum · marketing-paid · spotify-ads-ca · marketing-playbook" }
+    - { release: "Projet de guitare abandonné", step: "Independent playlist curators pitched", department: "Promotion", floor: "$35 USD", aim: "$150 USD", full: "$280 USD", basis: "SubmitHub credits at the vendor's $1 each, 1–4 credits a submission: 35 credits is our floor (about 10–35 pitches), 150 our decent run — the quantities are our defaults, the price is theirs. The full run is PlaylistPush's published campaign minimum. A paid submission buys a listen, never a placement", sources: "submithub-pricing · playlistpush-pricing" }
+    - { release: "Projet de guitare abandonné", step: "Total", floor: "$28 CAD + $54 USD", aim: "$510 CAD + $174.99 USD", full: "$970 CAD + $599.99 USD" }
+    - { release: "Projet de guitare abandonné", step: "Your budget", floor: "$745 CAD" }
+  spent:
+    - { date: "2026-09-29", release: "Projet de guitare abandonné", provider: "Charivari Records", object: "Mix and mastering EP", amount: "689.85", currency: "CAD", tax: "TPS 30.00 · TVQ 59.85", description: "Mixage 4 × 100 + mastering 4 × 50, invoice dated 2026-09-29" }
+    - { date: "2026-10-02", release: "Projet de guitare abandonné", provider: "CD Baby", object: "Single submission banale baddie", amount: "9.99", currency: "USD", tax: "0.00", description: "CD Baby Single Song Album Submission — purchase confirmation, 2026-10-02" }
+    - { date: "2026-10-02", release: "Projet de guitare abandonné", provider: "CD Baby", object: "FastForward banale baddie", amount: "29.99", currency: "USD", tax: "0.00", description: "CDB FastForward (priority inspection) — purchase confirmation, 2026-10-02" }
+    - { date: "2026-10-06", release: "Projet de guitare abandonné", provider: "45 Tours", object: "Radio delivery banale baddie", amount: "229.95", currency: "CAD", tax: "TPS 10.00 · TVQ 19.95 (on 200.00)", plan_step: "Radio serviced", description: "Interac e-Transfer to 45 TOURS / Productions Andrée Ménard Inc., deposited 2026-10-06. The 45 Tours invoice is in the account's Mon compte tab." }
+    - { date: "2026-10-23", release: "Projet de guitare abandonné", provider: "Groover", object: "Playlist campaign", amount: "37.50", currency: "EUR", tax: "VAT 0% (TVA non applicable, art. 259-B CGI)", description: "banale baddie curator campaign, 36 Grooviz. Card/PayPal charge: 61 CAD." }
+
+# The photos, PDFs, audio and video: a zip whose folders mirror the Drive.
+media: https://github.com/chloepilonv/house-label/releases/download/example-marie-gold-v1/marie-gold-media.zip
