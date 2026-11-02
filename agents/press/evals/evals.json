@@ -1,0 +1,117 @@
+{
+  "agent": "press",
+  "evals": [
+    {
+      "id": 1,
+      "skill": "press-draft-pitch",
+      "prompt": "My EP comes out March 14th. Write my press pitch.",
+      "expected_output": "A complete 120-250 word first-person pitch in the artist's locale, carrying the six beats, with UPPERCASE bracketed placeholders wherever the profile is thin, no greeting and no sign-off.",
+      "assertions": [
+        "Returns a complete pitch rather than questions, even with a thin profile",
+        "Missing facts appear as UPPERCASE bracketed placeholders, never invented",
+        "Contains no greeting and no sign-off",
+        "The words pitch, press release, and publicist do not appear in the body",
+        "Written in first person as the artist"
+      ]
+    },
+    {
+      "id": 2,
+      "skill": "press-compose-outreach",
+      "given": {
+        "artist.press_campaigns": {
+          "name": "EP campaign",
+          "pitch": "<a saved master pitch body, no greeting, no sign-off>",
+          "listen_url": "https://soundcloud.com/private/advance"
+        },
+        "catalog.press_outlets": [
+          { "outlet": "Le Canal Auditif", "outlet_type": "blog", "market": "quebec", "country": "CA", "language": "fr", "desk_email": "info@lecanalauditif.ca" },
+          { "outlet": "Exclaim!", "outlet_type": "magazine", "market": "canada", "country": "CA", "language": "en", "desk_email": "reviews@exclaim.ca" }
+        ],
+        "catalog.promotion_radio_stations": [
+          { "call_sign": "CHYZ", "name": "CHYZ 94.3 FM", "country": "CA", "region": "QC", "station_type": "campus", "languages": ["fr"], "submission_email": "musique@chyz.ca" }
+        ]
+      },
+      "prompt": "Send this to Le Canal Auditif, Exclaim!, and CHYZ.",
+      "expected_output": "Two drafts — Le Canal Auditif in French, Exclaim! in English opening with the story angle — and a hand-off for CHYZ, which is a radio station and belongs to the Promotion Agent, not a third draft.",
+      "assertions": [
+        "The CHYZ draft is in French and at most 5 sentences",
+        "The Exclaim! draft is in English and opens with a story angle rather than a review request",
+        "The two subject lines differ, radio from press",
+        "No email is drafted to SOCAN — it is named as an industry org and given an action instead",
+        "Says the artist sends the drafts, and that pipeline status moves only when they mark them sent",
+        "No email address appears that was not in the contact record"
+      ]
+    },
+    {
+      "id": 3,
+      "skill": "press-run-campaign",
+      "given": {
+        "artist.press_campaigns": {
+          "id": "e3000000-0000-4000-8000-000000000003",
+          "name": "EP campaign",
+          "release_date": "28 days after the run date",
+          "target_markets": ["quebec"]
+        },
+        "artist.press_pitches": [
+          { "campaign_id": "e3000000-0000-4000-8000-000000000003", "contact_slug": "chyz-94-3-fm:music-director", "status": "pitched", "sent_at": "20 days before the run date", "follow_up_count": 0 },
+          { "campaign_id": "e3000000-0000-4000-8000-000000000003", "contact_slug": "ckut-90-3-fm:music-coordinator", "status": "pitched", "sent_at": "3 days before the run date", "follow_up_count": 0 },
+          { "campaign_id": "e3000000-0000-4000-8000-000000000003", "contact_slug": "pan-m-360:alain-brunet", "status": "responded", "responded_at": "2 days before the run date", "follow_up_count": 1 }
+        ]
+      },
+      "prompt": "My release is in 4 weeks. What should I be doing, and how's my outreach going?",
+      "expected_output": "Places the artist in the press stage, shows that stage's checklist filtered to Quebec, names the contact segment to work next, and reports 3 contacts: 2 pitched, 1 responded, with CHYZ flagged as due for a follow-up at 20 days.",
+      "assertions": [
+        "Says the stage is the press stage and that it came from weeks-until-release",
+        "Guidance names Quebec channels only, matching target_markets",
+        "Reports 2 at pitched and 1 responded out of 3, matching the rows it was given",
+        "Names CHYZ as the follow-up candidate and not CKUT, whose send is 3 days old",
+        "Reports no open rate, and says nothing sets the opened status"
+      ]
+    },
+    {
+      "id": 4,
+      "skill": "press-run-campaign",
+      "given": {
+        "artist.press_campaigns": {
+          "id": "e4000000-0000-4000-8000-000000000004",
+          "name": "EP campaign"
+        },
+        "artist.press_pitches": {
+          "campaign_id": "e4000000-0000-4000-8000-000000000004",
+          "contact_slug": "pan-m-360:alain-brunet",
+          "status": "pitched",
+          "follow_up_count": 2,
+          "last_follow_up_at": "16 days before the run date"
+        }
+      },
+      "prompt": "PAN M 360 still hasn't replied and I've followed up twice. Should I chase them again?",
+      "expected_output": "Says no — two follow-ups per contact is the cap the schema enforces on follow_up_count — and points at the next contact segment instead of drafting a third message.",
+      "assertions": [
+        "Refuses to draft a third follow-up",
+        "States the cap as two follow-ups per contact, not two touches total",
+        "Gives the reason as relationship discipline and the schema cap, without citing a response-rate statistic",
+        "Offers a concrete next action instead"
+      ]
+    },
+    {
+      "id": 5,
+      "skill": "press-manage-contacts",
+      "given": {
+        "catalog.press_outlets": [
+          { "outlet": "Le Devoir", "outlet_type": "newspaper", "market": "quebec", "country": "CA", "tier": 1, "city": "Montréal", "language": "fr", "desk_email": null, "last_verified": null },
+          { "outlet": "PAN M 360", "outlet_type": "webzine", "market": "quebec", "country": "CA", "tier": 1, "city": "Montréal", "language": "bilingual", "desk_email": null, "last_verified": null },
+          { "outlet": "ELLE Québec", "outlet_type": "magazine", "market": "quebec", "country": "CA", "tier": 1, "city": null, "language": "fr", "desk_email": null, "last_verified": null }
+        ]
+      },
+      "prompt": "Show me my Quebec press list, then save a note on PAN M 360 — I met their editor at M pour Montréal.",
+      "expected_output": "The Quebec outlets grouped by type and sorted tier-first then outlet, Check web printed where no desk address exists, the magazines as their own group, and the note applied for the conversation while stating it is not stored.",
+      "assertions": [
+        "Does not claim to have seeded or loaded a contact database",
+        "States that the contact catalog is read-only to the artist and the note is not stored",
+        "Names artist.press_contact_overrides as the proposed home for the note",
+        "SOCAN shows Check web rather than a blank email, and is grouped apart from the radio contacts",
+        "Flags that the CHYZ music director is an undated name and should be verified before drafting"
+      ]
+    }
+  ]
+}

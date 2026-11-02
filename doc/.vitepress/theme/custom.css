@@ -1,0 +1,84 @@
+/* docs.houselabel.ai — the houselabel.ai look: Playfair serif display, Inter
+   body, JetBrains Mono for the small labels, burgundy accent, the pale
+   grey-blue wash with film grain behind everything. Light by default. */
+:root {
+  --hl-brand: #642627;
+  --hl-accent: #a63a2f;
+  --hl-ink: #1a1a1a;
+  --hl-muted: #71717a;
+  --vp-font-family-base: "Inter", "Helvetica Neue", Arial, sans-serif;
+  --vp-font-family-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --hl-serif: "Playfair Display", "Times New Roman", Georgia, serif;
+  --vp-c-brand-1: var(--hl-brand);
+  --vp-c-brand-2: var(--hl-accent);
+  --vp-c-brand-3: #7a2e2f;
+  --vp-c-brand-soft: rgba(100, 38, 39, 0.10);
+  --vp-c-text-1: var(--hl-ink);
+  --vp-c-text-2: #4b4b50;
+  --vp-c-text-3: var(--hl-muted);
+  --vp-c-bg: transparent;
+  --vp-c-bg-alt: rgba(255, 255, 255, 0.55);
+  --vp-c-bg-soft: rgba(255, 255, 255, 0.6);
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-divider: #d4d4d8;
+  --vp-sidebar-bg-color: rgba(255, 255, 255, 0.45);
+  --vp-nav-bg-color: rgba(242, 242, 246, 0.85);
+  --vp-sidebar-width: 272px;
+  --vp-layout-max-width: 1440px;
+}
+.dark {
+  --vp-c-bg: #121214;
+  --vp-c-bg-alt: #0e0e10;
+  --vp-c-bg-soft: #1a1a1d;
+  --vp-c-bg-elv: #1a1a1d;
+  --vp-c-divider: #2a2a2e;
+  --vp-c-text-1: #ece7dd;
+  --vp-c-text-2: #b5b0a7;
+  --vp-c-text-3: #7a756d;
+  --vp-c-brand-1: #d9a39d;
+  --vp-c-brand-2: #c9847c;
+  --vp-sidebar-bg-color: #0e0e10;
+  --vp-nav-bg-color: rgba(14, 14, 16, 0.9);
+}
+html:not(.dark) body {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23g)' opacity='0.14'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 70% 50% at 45% 25%, rgba(255,255,255,0.95) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 70% at 90% 10%, #d5d8e4 0%, transparent 55%),
+    radial-gradient(ellipse 55% 50% at 10% 90%, #d8dae2 0%, transparent 50%),
+    linear-gradient(165deg, #f2f2f6 0%, #e4e5ec 30%, #d9dbe4 60%, #d2d4de 100%);
+  background-attachment: fixed;
+}
+.VPNavBar, .VPSidebar { backdrop-filter: blur(10px); }
+
+/* Headings in the serif, like the site */
+.vp-doc h1, .vp-doc h2, .VPNavBarTitle .title { font-family: var(--hl-serif); font-weight: 600; letter-spacing: -0.01em; }
+.vp-doc h1 { font-size: 40px; }
+.vp-doc h2 { border-top: 1px solid var(--vp-c-divider); font-size: 28px; }
+.VPNavBarTitle .title { text-transform: uppercase; letter-spacing: 0.06em; font-weight: 500; font-size: 15px; }
+
+/* Group labels: the mono small-caps pill style of "AGENTIC MUSIC LABEL" */
+.VPSidebarItem.level-0 > .item .text, .VPDocOutlineTitle, .outline-title {
+  font-family: var(--vp-font-family-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--vp-c-text-3);
+}
+.VPSidebarItem.level-1 .text { font-family: var(--vp-font-family-base); font-size: 14px; letter-spacing: 0; text-transform: none; color: var(--vp-c-text-1); }
+.VPSidebarItem.level-1.is-active > .item > .link > .text { color: var(--hl-brand); font-weight: 600; }
+
+/* The hero */
+.hl-hero { position: relative; border-radius: 18px; overflow: hidden; margin: 6px 0 26px; min-height: 340px; background: #2b2130 url("/hero.jpg") center 35% / cover no-repeat; color: #fff; display: flex; flex-direction: column; justify-content: flex-end; padding: 36px 40px; box-shadow: 0 20px 60px rgba(40, 30, 50, 0.25); }
+.hl-hero::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(20,10,30,0.15) 0%, rgba(20,10,30,0.55) 100%); }
+.hl-hero > * { position: relative; }
+.hl-hero img { height: 30px; width: auto; margin: 0 0 auto; align-self: flex-start; }
+.hl-pill { display: inline-block; font-family: var(--vp-font-family-mono); font-size: 10.5px; letter-spacing: 0.2em; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.55); border-radius: 999px; padding: 6px 12px; margin: 26px 0 14px; align-self: flex-start; }
+.vp-doc .hl-title { font-family: var(--hl-serif); font-size: 56px; line-height: 1.05 !important; margin: 0 0 10px; font-weight: 400; }
+.hl-title em { font-style: normal; color: rgba(255,255,255,0.72); }
+.vp-doc .hl-sub { font-size: 16px; color: rgba(255,255,255,0.86); margin: 0; max-width: 520px; }
+.hl-badges { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin: 0 0 14px; }
+.hl-badges img { height: 20px; }
+.hl-links { text-align: center; margin: 0 0 8px; }
+.hl-links a { margin: 0 6px; }
+@media (max-width: 640px) { .hl-hero { padding: 24px; min-height: 280px; } .hl-title { font-size: 38px; } }

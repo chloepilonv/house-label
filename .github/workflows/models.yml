@@ -1,0 +1,93 @@
+name: Model check
+
+# Once a month: is every model pinned in engine/models.ts still served, and is
+# there a newer version of it? Lists each provider's live models and opens an
+# issue with what changed. It never edits the table — an upgrade is a branch
+# with the evals re-run. See the header of engine/model-check.ts.
+#
+# Required repo secrets:
+#   ANTHROPIC_API_KEY  — the recommended provider; the check refuses to run without it
+# Optional (a provider without its key is skipped and named in the summary):
+#   ANTHROPIC_WORKSPACE_ID · OPENAI_API_KEY · GOOGLE_GENERATIVE_AI_API_KEY ·
+#   OPENROUTER_API_KEY · DEEPSEEK_API_KEY · MOONSHOT_API_KEY · MISTRAL_API_KEY · GROQ_API_KEY
+
+on:
+  schedule:
+    - cron: "0 6 1 * *"          # the 1st of every month, 06:00 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: model-check
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      ANTHROPIC_WORKSPACE_ID: ${{ secrets.ANTHROPIC_WORKSPACE_ID }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      GOOGLE_GENERATIVE_AI_API_KEY: ${{ secrets.GOOGLE_GENERATIVE_AI_API_KEY }}
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+      MOONSHOT_API_KEY: ${{ secrets.MOONSHOT_API_KEY }}
+      MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check required secrets
+        run: |
+          if [ -z "$ANTHROPIC_API_KEY" ]; then
+            printf '## Cannot run — missing repository secrets\n\n- `ANTHROPIC_API_KEY`\n\nSet it at Settings → Secrets and variables → Actions.\n' >> "$GITHUB_STEP_SUMMARY"
+            echo "::error::Missing repository secret: ANTHROPIC_API_KEY"
+            exit 1
+          fi
+
+      - uses: oven-sh/setup-bun@v2
+        with: { bun-version: latest }
+      - run: bun install --frozen-lockfile
+
+      - name: Check the pinned models
+        env:
+          MODEL_CHECK_REPORT: ${{ runner.temp }}/model-check.md
+        run: bun run models:check | tee -a "$GITHUB_STEP_SUMMARY"
+
+      # Findings are not a failure (a newer model is a suggestion), so they get
+      # their own issue. One open issue at a time; later runs comment on it.
+      - name: Open an issue with the findings
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPORT: ${{ runner.temp }}/model-check.md
+        run: |
+          [ -s "$REPORT" ] || { echo "Nothing to report."; exit 0; }
+          title="models: engine/models.ts needs an update"
+          n=$(gh issue list --state open --search "$title in:title" --json number --jq '.[0].number // empty')
+          if [ -n "$n" ]; then
+            gh issue comment "$n" --body-file "$REPORT"
+          else
+            gh issue create --title "$title" --body-file "$REPORT"
+          fi
+
+      - name: Open an issue on failure
+        if: failure() && github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUN: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          title="cron failed: ${{ github.workflow }}"
+          if gh issue list --state open --search "$title in:title" --json number \
+             --jq 'length' | grep -qv '^0$'; then
+            echo "An open issue already exists — not duplicating."
+            exit 0
+          fi
+          printf 'Scheduled run failed on %s.\n\nRun: %s\n\nA missing secret, a refused key, or a pinned model that is gone. The run summary says which.\n' "$(date -u +%Y-%m-%d)" "$RUN" > body.md
+          gh issue create --title "$title" --body-file body.md

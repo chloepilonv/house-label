@@ -1,0 +1,26 @@
+{
+  "agent": "{{slug}}",
+  "evals": [
+    {
+      "id": 1,
+      "skill": "{{slug}}-{{verb-phrase}}",
+      "given": {},
+      "prompt": "{{What a real artist would type — first person, specific, with the messy detail a real request has: a city, a genre, a budget, a date. Not 'find me venues'.}}",
+      "expected_output": "{{What a correct answer contains, in one or two sentences.}}",
+      "assertions": [
+        "{{An objectively checkable statement about the output.}}",
+        "{{The honesty rule, as a check: e.g. 'Does not state a deadline without sending the artist to the funder's page to confirm it.'}}",
+        "{{The null path, as a check: e.g. 'Missing data appears as a visible placeholder, not an invented value.'}}"
+      ]
+    },
+    {
+      "id": 2,
+      "skill": "{{slug}}-{{verb-phrase}}",
+      "prompt": "{{A case that should NOT succeed cleanly — the artist is ineligible, the data is missing, or the request is out of this department's scope. What the agent does when it can't deliver is half of whether it works.}}",
+      "expected_output": "{{Says plainly what is wrong and what the artist can do instead.}}",
+      "assertions": [
+        "{{Names the blocker explicitly rather than producing a confident partial answer.}}"
+      ]
+    }
+  ]
+}

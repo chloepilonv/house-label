@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="260" viewBox="0 0 1200 260" role="img" aria-label="House Label">
+  <rect x="2" y="2" width="1196" height="256" rx="22" fill="#0b0b0c" stroke="#1f1f22" stroke-width="4"/>
+  <rect x="26" y="26" width="1148" height="208" fill="none" stroke="#e0b44a" stroke-width="2" opacity="0.9"/>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace" font-size="52" fill="#f3e4bc" text-anchor="middle" style="font-variant-ligatures:none">
+    <text x="600" y="98" xml:space="preserve">╦ ╦╔═╗╦ ╦╔═╗╔═╗  ╦  ╔═╗╔╗ ╔═╗╦  </text>
+    <text x="600" y="150" xml:space="preserve">╠═╣║ ║║ ║╚═╗║╣   ║  ╠═╣╠╩╗║╣ ║  </text>
+    <text x="600" y="202" xml:space="preserve">╩ ╩╚═╝╚═╝╚═╝╚═╝  ╩═╝╩ ╩╚═╝╚═╝╩═╝</text>
+  </g>
+</svg>

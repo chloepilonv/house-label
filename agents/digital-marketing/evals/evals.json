@@ -1,0 +1,507 @@
+{
+  "agent": "digital-marketing",
+  "evals": [
+    {
+      "id": 1,
+      "skill": "digital-marketing-plan",
+      "given": {
+        "artist.profile": {
+          "artist_name": "Léonie",
+          "city": "Montréal",
+          "region": "QC",
+          "country": "CA",
+          "timezone": "America/Toronto",
+          "genres": [
+            "pop"
+          ],
+          "languages": [
+            "fr",
+            "en"
+          ],
+          "preferred_locale": "fr",
+          "career_stage": "emerging"
+        },
+        "artist.presskit": {
+          "short_bio": "Pop francophone de Montréal.",
+          "visual_identity": {
+            "primary": "#E4572E"
+          }
+        }
+      },
+      "prompt": "Je veux planifier la campagne de mon single qui sort dans environ un mois. Je suis surtout sur Instagram et TikTok.",
+      "expected_output": "A conversational one-question-at-a-time interview in French that skips anything the profile or presskit already answers, follows the single-specific flow (story, pre-save), and closes with the mandatory anything-else question before emitting the readiness sentinel.",
+      "assertions": [
+        "Asks one question per turn in plain text, with no markdown or emojis",
+        "Does not re-ask the platforms or the target date, both stated in the prompt",
+        "Does not re-ask the city, genre, language, or career stage, all present in the profile",
+        "Every reply is in French and no reply mixes languages",
+        "No turn runs longer than three sentences",
+        "The final question asks about time constraints, unavailability, label requirements, and deadlines",
+        "Frames the budget question so that $0 is an acceptable answer",
+        "Ends with the summary followed by a single [READY_TO_GENERATE]"
+      ]
+    },
+    {
+      "id": 2,
+      "skill": "digital-marketing-plan",
+      "given": {
+        "artist.profile": {
+          "timezone": "America/Toronto",
+          "region": "QC",
+          "preferred_locale": "fr"
+        },
+        "artist.marketing_campaigns": {
+          "title": "Lancement du single",
+          "project_type": "single_release",
+          "status": "generating",
+          "platforms": [
+            "instagram",
+            "tiktok"
+          ]
+        }
+      },
+      "prompt": "Parfait, génère le plan. Le budget est de 150 $.",
+      "expected_output": "A phased plan of roughly 14-20 tasks from 3-4 weeks before to 1-2 weeks after, every asset paired create-then-post, only Instagram and TikTok used, task costs reconciled against $150, posting times in the artist's local timezone.",
+      "assertions": [
+        "Every create task precedes its post task by 1-3 days",
+        "No platform outside Instagram and TikTok appears in any task",
+        "Estimated task costs sum to $150 or less",
+        "total_estimated_cost equals the sum of the task estimated_costs",
+        "Runs reconcile-budget.ts rather than summing task costs in prose",
+        "No paid line sits below its product's stated minimum — Spotify Ads Manager appears only at $250 or more, a publicist only at $1000 or more",
+        "Each task carries type, platform group, content brief, day offset, cost, and posting time",
+        "Posting times are given in the artist's local time and no time is labelled EST, PST, MST, CST, or AST"
+      ]
+    },
+    {
+      "id": 3,
+      "skill": "digital-marketing-plan",
+      "given": {
+        "artist.profile": {
+          "timezone": "America/Toronto",
+          "preferred_locale": "fr"
+        },
+        "artist.marketing_campaigns": {
+          "title": "Lancement du single",
+          "project_type": "single_release",
+          "status": "generating",
+          "platforms": [
+            "instagram",
+            "tiktok"
+          ]
+        }
+      },
+      "prompt": "En fait je n'ai aucun budget. Refais le plan à 0 $.",
+      "expected_output": "The same phased plan with no paid tactic in it — every task organic, every paid task rewritten into its organic equivalent or dropped rather than left standing at a cost of zero.",
+      "assertions": [
+        "Every task's estimated cost is 0 and total_estimated_cost is 0",
+        "No task title or content brief names a paid product such as Spotify Ads Manager, Spotify Marquee, Spark Ads, a paid playlist service, or a publicist",
+        "Each dropped paid tactic is either replaced by a named organic equivalent or explicitly removed",
+        "The task count stays within the 14-20 range rather than collapsing when the paid tasks go"
+      ]
+    },
+    {
+      "id": 4,
+      "skill": "digital-marketing-plan",
+      "given": {
+        "artist.profile": {
+          "timezone": "America/Toronto",
+          "preferred_locale": "fr"
+        },
+        "artist.marketing_campaigns": {
+          "title": "Lancement du single",
+          "project_type": "single_release",
+          "status": "generating",
+          "platforms": [
+            "instagram",
+            "tiktok"
+          ]
+        }
+      },
+      "prompt": "Fais-moi le plan, je te dirai pour l'argent plus tard.",
+      "expected_output": "A plan whose total is the real sum of its task costs, with no invented ceiling and an explicit note that no budget was captured.",
+      "assertions": [
+        "Says plainly that no budget was captured",
+        "Does not state or imply a budget ceiling the artist never gave",
+        "total_estimated_cost equals the sum of the task estimated_costs",
+        "Does not zero the task costs"
+      ]
+    },
+    {
+      "id": 5,
+      "skill": "digital-marketing-plan",
+      "given": {
+        "artist.marketing_campaigns": {
+          "id": "c5000000-0000-4000-8000-000000000005",
+          "title": "Lancement du single",
+          "project_type": "single_release",
+          "status": "active",
+          "platforms": [
+            "instagram",
+            "tiktok"
+          ]
+        },
+        "artist.marketing_tasks": [
+          {
+            "campaign_id": "c5000000-0000-4000-8000-000000000005",
+            "sort_order": 7,
+            "title": "Publier le Reel de lancement",
+            "status": "done",
+            "due_date": "6 days before the run date",
+            "captions": {
+              "instagram": "caption réécrite à la main"
+            }
+          },
+          {
+            "campaign_id": "c5000000-0000-4000-8000-000000000005",
+            "sort_order": 8,
+            "title": "Relance playlists",
+            "status": "in_progress",
+            "due_date": "2 days after the run date",
+            "content_url": "https://drive.example/reel.mp4"
+          }
+        ]
+      },
+      "prompt": "En fait regénère tout, je veux un angle différent.",
+      "expected_output": "A warning that regeneration reassigns what each sort_order means rather than deleting anything, naming the tasks whose meaning shifts and the hand-edited caption now attached to different work, then a wait for confirmation.",
+      "assertions": [
+        "States that task statuses, captions, content links, and calendar ids survive the regeneration",
+        "Does not claim the existing tasks, their progress, or their captions will be deleted",
+        "Names which tasks change meaning because sort_order is reassigned",
+        "Says that a shorter plan leaves trailing tasks needing manual deletion",
+        "Produces no new plan until the artist confirms"
+      ]
+    },
+    {
+      "id": 6,
+      "skill": "digital-marketing-draft-content",
+      "given": {
+        "artist.presskit": {
+          "visual_identity": {
+            "primary": "#E4572E"
+          }
+        },
+        "artist.platform_stats": [
+          {
+            "platform": "spotify",
+            "monthly_listeners": 4200,
+            "date": "2026-07-01"
+          }
+        ]
+      },
+      "prompt": "Écris les captions pour la publication du jour de sortie.",
+      "expected_output": "One caption per selected platform in that platform's native style, grounded in the artist's real assets, with hooks written as actual first lines and specific CTAs.",
+      "assertions": [
+        "One caption for Instagram and one for TikTok, each in that platform's conventions",
+        "Instagram caption carries 8-12 hashtags and a CTA",
+        "TikTok caption is hook-first",
+        "CTAs are specific, never generic phrasing like check it out",
+        "Any metric cited matches the 4,200 monthly listeners on record",
+        "No press quote or award appears, because the presskit holds none"
+      ]
+    },
+    {
+      "id": 7,
+      "skill": null,
+      "prompt": "Ça vaut-tu la peine de mettre de l'argent sur Spotify Ad Studio pour un single?",
+      "given": {
+        "artist.marketing_campaigns": [
+          {
+            "title": "Deuxième album",
+            "project_type": "album_release",
+            "budget": 150,
+            "primary_goal": "streams",
+            "target_date": "2026-11-13"
+          }
+        ]
+      },
+      "expected_output": "A plain answer that Spotify Ad Studio has a $250 minimum and so is not available at this budget, what to do with $150 instead, and the knowledge page the floor comes from — with no campaign, task or memory written.",
+      "assertions": [
+        "Answers in French, matching the prompt",
+        "Says Spotify Ad Studio needs at least $250 and names the campaign's $150 as the reason it is out",
+        "Names paid-promotion.md, or another knowledge page, as where the floor comes from",
+        "Says the pricing is a heuristic to confirm before spending, not a quoted price",
+        "Nothing is written — no campaign, no task, no memory",
+        "Points at digital-marketing-plan if the artist wants the spend actually reallocated"
+      ]
+    },
+    {
+      "id": 8,
+      "skill": null,
+      "prompt": "Combien de temps avant la sortie je devrais commencer à poster?",
+      "given": {
+        "artist.profile": {
+          "country": "CA",
+          "region": "QC",
+          "preferred_locale": "fr"
+        }
+      },
+      "expected_output": "The pre-release window from the playbook — roughly three to four weeks of build-up before the date, with the editorial pitch deadline named — attributed to the knowledge page, and no plan generated.",
+      "assertions": [
+        "Answers in French, matching the profile locale",
+        "Gives the 3-4 week pre-release window from marketing-fundamentals.md",
+        "Names the page the window comes from",
+        "Does not generate a plan or a task list",
+        "Hands off to digital-marketing-plan for the actual dated plan"
+      ]
+    },
+    {
+      "id": 9,
+      "skill": "digital-marketing-plan",
+      "given": {
+        "artist.projects": [
+          {
+            "title": "Les heures creuses",
+            "project_type": "ep",
+            "street_date": "2026-11-13",
+            "budget_amount": 0,
+            "budget_currency": "CAD"
+          }
+        ],
+        "conversation": "Earlier in the interview the strategist said the budget was $0, carried from the project. The artist replied: 'how do you know its 0$? I can put 50$ on the campaign.' The strategist answered 'Fixing that now: budget is $50.' Asked what the campaign is for, the artist said 'I want more streams, and more following.'"
+      },
+      "prompt": "Ok, save it.",
+      "expected_output": "A campaign row carrying budget 50 — the corrected figure, not the project's 0 — and primary_goal as an ordered array holding both streams and followers, streams first. total_estimated_cost comes from reconcile-budget.ts, never a sum done in prose.",
+      "assertions": [
+        "budget is saved as 50, not 0 — the correction wins over the value carried from the project",
+        "primary_goal holds BOTH streams and followers, ordered, not one of them",
+        "total_estimated_cost is set from reconcile-budget.ts rather than left null or added up in prose",
+        "Nothing the artist did not say is written — no inferred budget, no assumed goal",
+        "The row is checked against the conversation field by field before the write"
+      ]
+    },
+    {
+      "id": 10,
+      "skill": "digital-marketing-plan",
+      "given": {
+        "artist.marketing_campaigns": [
+          {
+            "title": "Les heures creuses",
+            "budget": 50,
+            "project_type": "ep_release",
+            "target_date": "2026-11-13"
+          }
+        ],
+        "artist.marketing_tasks": "20 tasks written, every estimated_cost 0, total_estimated_cost null"
+      },
+      "prompt": "Is the budget right on that plan?",
+      "expected_output": "Calls the reconcile_budget tool with the campaign id and reports what it returned — the sum before, the sum after, and the total it set. Never adds the costs up in prose, and never tells the artist to run a bash script.",
+      "assertions": [
+        "Calls the reconcile_budget tool rather than summing the costs itself",
+        "Does not instruct the artist to run reconcile-budget.ts from a shell — there is no shell here",
+        "Reports the total it set, and says plainly if any task cost was scaled down",
+        "Leaves total_estimated_cost set rather than null"
+      ]
+    },
+    {
+      "id": 11,
+      "skill": "digital-marketing-plan",
+      "given": {
+        "artist.profile": {
+          "country": "CA",
+          "region": "QC",
+          "preferred_locale": "en"
+        }
+      },
+      "prompt": "I want more streams I guess. I don't really know what a good number is.",
+      "expected_output": "Suggests a documented, reachable target rather than inventing a stream count — 200 pre-saves, where the 40-60% first-week algorithmic lift appears, or a save rate above 20%, which Spotify weights ~3x above stream volume. Records it with its date as success_target and names the tasks that move it.",
+      "assertions": [
+        "Does not invent a stream-count target — a stream count is an outcome nobody controls",
+        "Offers 200 pre-saves or a >20% save rate, and says why each is the number that matters",
+        "Gets a date attached, so the goal is time-bound and checkable",
+        "Saves it to success_target in the artist's own words",
+        "Names which tasks in the plan move that specific number"
+      ]
+    },
+    {
+      "id": 12,
+      "skill": "digital-marketing-plan",
+      "given": {
+        "artist.marketing_campaigns": [
+          {
+            "title": "EP campaign",
+            "budget": 50,
+            "primary_goal": [
+              "streams"
+            ],
+            "project_type": "ep_release",
+            "target_date": "2026-11-13"
+          }
+        ]
+      },
+      "prompt": "With $50, is there anything worth doing with ads?",
+      "expected_output": "Opens paid-promotion.md, reports that Meta publishes no dollar minimum and $5-10/day is a working budget, so $50 buys roughly 10 days of Instagram/Facebook traffic ads. Says TikTok (above $50/day) and Spotify (CA$250) are out at this budget, and cites the floors rather than recalling them.",
+      "assertions": [
+        "Says YES — Meta has no published minimum and $50 runs there",
+        "Does NOT claim $50 clears no ad floor; that is true of TikTok and Spotify only",
+        "Names the floors it rules out and where each number comes from",
+        "Proposes a concrete objective — Traffic to the pre-save or smart link, never Brand Awareness",
+        "Opens the knowledge page rather than answering from memory"
+      ]
+    },
+    {
+      "id": 13,
+      "skill": "digital-marketing-plan",
+      "given": {
+        "artist.marketing_campaigns": [
+          {
+            "title": "EP campaign",
+            "project_type": "ep_release",
+            "target_date": "2026-11-13",
+            "budget": 50
+          }
+        ]
+      },
+      "prompt": "Build the plan.",
+      "expected_output": "Writes the ideas to marketing_ideas before saying a menu exists, shows the menu, and after any task is written the campaign's total_estimated_cost equals the sum of task costs — never null.",
+      "assertions": [
+        "Content ideas are WRITTEN to marketing_ideas, not described in prose",
+        "The menu the artist sees is the rendered numbered list, not an announcement that one exists",
+        "No second campaign row is created for a title that already exists",
+        "total_estimated_cost is set and equals the sum of task costs — never left null",
+        "No task cost exceeds what the stated budget allows once reconciled"
+      ]
+    },
+    {
+      "id": 14,
+      "skill": "digital-marketing-plan",
+      "given": {
+        "artist.marketing_campaigns": [
+          {
+            "title": "Album campaign",
+            "project_type": "album_release",
+            "target_date": "2026-12-04",
+            "budget": 200
+          }
+        ]
+      },
+      "prompt": "Build the plan.",
+      "expected_output": "The album plan contains a tracklist reveal as a dated task in the T-30 to T-14 window, in one of the shapes on marketing-fundamentals.md, naming any features it announces.",
+      "assertions": [
+        "The plan contains a tracklist reveal task — a record's tracklist is content, not an afterthought",
+        "Its date falls between 30 and 14 days before the target date, after the announcement and before launch week",
+        "It commits to ONE shape — all at once, progressive, feature reveal, or guess the list — not four tasks",
+        "The task title says what the thing is, not 'tracklist content'",
+        "It is one task for the release, never one per track"
+      ]
+    },
+    {
+      "id": 15,
+      "skill": "digital-marketing-plan",
+      "given": {
+        "artist.marketing_campaigns": [
+          {
+            "title": "Single campaign",
+            "project_type": "single_release",
+            "target_date": "2026-11-06",
+            "budget": 50
+          }
+        ]
+      },
+      "prompt": "Build the plan.",
+      "expected_output": "A single's plan contains no tracklist reveal — a single has no tracklist — and the slot goes to lyric-led and hook content instead.",
+      "assertions": [
+        "No tracklist reveal task appears anywhere in the plan",
+        "If the artist asks for one, the reply says a single has no tracklist and offers a lyric reveal or a credit reveal instead"
+      ]
+    },
+    {
+      "id": 16,
+      "skill": "digital-marketing-plan",
+      "given": {
+        "artist.marketing_campaigns": [
+          {
+            "title": "Album campaign",
+            "project_type": "album_release",
+            "target_date": "2026-12-04",
+            "budget": 200
+          }
+        ]
+      },
+      "prompt": "Build the plan.",
+      "expected_output": "An album plan shaped as the six movements of the record arc, not a single's four-week arc with a longer date range — including a release week that spotlights a different track each day.",
+      "assertions": [
+        "Release week contains more than one post — a different track spotlighted on separate days, not a single release-day announcement",
+        "At least one post-release task is a mini-campaign for an individual track, not a generic 'keep posting' task",
+        "The pre-release window runs longer than the four weeks a single gets",
+        "The plan does not treat the record as one undifferentiated object — individual track titles appear in task titles"
+      ]
+    },
+    {
+      "id": 17,
+      "skill": "digital-marketing-plan",
+      "given": {
+        "artist.marketing_campaigns": [
+          {
+            "title": "EP campaign",
+            "project_type": "ep_release",
+            "target_date": "2026-11-13",
+            "budget": 50
+          }
+        ]
+      },
+      "prompt": "Je veux planifier la campagne de mon EP.",
+      "expected_output": "The record's intake asks about the pre-save — it is no longer single-only — and the question reads as the release's own link, distinct from the lead single's.",
+      "assertions": [
+        "The pre-save question IS asked for an EP, phrased as the pre-save for the release itself",
+        "The plan contains a pre-save task for the EP as a whole, not only for the lead single",
+        "Every reply is in French",
+        "The rollout-order question is still asked, and the pre-save question does not replace it"
+      ]
+    },
+    {
+      "id": 18,
+      "skill": "digital-marketing-build-website",
+      "given": {
+        "artist.profile": {
+          "artist_name": "Odile Ray",
+          "city": "Montreal",
+          "region": "QC",
+          "country": "CA",
+          "genres": ["folk acoustic"],
+          "preferred_locale": "en"
+        },
+        "artist.presskit": {
+          "long_bio": "Odile Ray est une autrice-compositrice-interprète folk basée à Montréal.",
+          "contact_email": "management@example.com"
+        },
+        "artist.releases": [
+          { "title": "Les heures creuses", "release_type": "ep", "release_date": "2026-11-13" },
+          { "title": "Premier hiver (Radio Edit)", "release_type": "single", "release_date": "2024-01-01", "cover_art_url": "https://example.com/cover.jpg", "smart_link_url": "https://found.ee/premierhiver" }
+        ],
+        "artist.platforms": [
+          { "platform": "bandcamp", "url": "https://odile-ray.bandcamp.com" },
+          { "platform": "instagram", "url": "https://instagram.com/odileray" }
+        ]
+      },
+      "prompt": "Build my website.",
+      "expected_output": "Asks the five website questions one at a time (first language, domain, store, newsletter, Bandsintown), each skippable; then runs `bun run website:build`, reports the file it wrote and the missing list with the command that fills each gap — pre-save for the EP, the English bio, past shows — and asks for the first gap rather than inventing content. Deploys only after the artist has seen the preview and said yes.",
+      "assertions": [
+        "Asks one question per turn and accepts 'none' or a blank for every one of the five",
+        "Runs `bun run website:build` rather than writing HTML in the conversation",
+        "Reports the missing list from the build output, naming the pre-save link and the English bio as gaps",
+        "Does not invent a bio, a quote, a show or a merch item to fill a gap",
+        "Does not run `website:deploy` before the artist has seen the preview and agreed",
+        "Never asks for the bio, the socials or the releases — all three are on file"
+      ]
+    },
+    {
+      "id": 19,
+      "skill": "digital-marketing-build-website",
+      "given": {
+        "artist.profile": {
+          "artist_name": "Odile Ray",
+          "preferred_locale": "fr"
+        }
+      },
+      "prompt": "Mets mon site en ligne maintenant.",
+      "expected_output": "Refuses cleanly, in French: with no releases, no bio and no photos on file the page would be a name on a black background, and says which department fills each — the presskit intake for bio and photos, the catalog for releases — before offering to build a preview anyway so the artist sees the gaps.",
+      "assertions": [
+        "Every reply is in French",
+        "Does not deploy",
+        "Names the presskit intake as what fills the bio and photos, and the catalog as what fills the releases",
+        "Offers the preview build as the next step, not a deploy"
+      ]
+    }
+  ]
+}

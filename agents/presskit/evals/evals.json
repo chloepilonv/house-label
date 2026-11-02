@@ -1,0 +1,140 @@
+{
+  "agent": "presskit",
+  "evals": [
+    {
+      "id": 1,
+      "skill": "presskit-build",
+      "prompt": "I want to build my presskit. Here's the bio I use: \"Léonie is a Montreal pop artist whose debut EP Nuit Blanche won the GAMIQ Rap EP of the Year in 2023. She sold out Le Ritz PDB that November and has been writing in French and English ever since.\"",
+      "expected_output": "Extracts the GAMIQ award and the Le Ritz show from the bio in the same turn, saves them through tools, then asks a follow-up that names what it found — starting the scripted order at moodboard, since that section is empty.",
+      "assertions": [
+        "The GAMIQ award and the Le Ritz show are both pulled out of the bio in this turn",
+        "The follow-up question names one of them rather than asking generically",
+        "Every claimed save corresponds to a tool call, not just prose",
+        "Asks one short question per turn in plain text, no markdown or emojis",
+        "Answers only in the artist's preferred_locale",
+        "Asks about the moodboard before photos and bio"
+      ]
+    },
+    {
+      "id": 2,
+      "skill": null,
+      "given": {
+        "artist.memory": [
+          {
+            "agent": "presskit",
+            "key": "press_rejected",
+            "language": "en",
+            "value": "https://loudmouth.example/reviews/leonie-solo — a different Léonie, rejected by the artist"
+          },
+          {
+            "agent": "presskit",
+            "key": "press_disambiguation",
+            "language": "en",
+            "value": "Montreal · francophone pop · debut EP \"Nuit Blanche\""
+          }
+        ]
+      },
+      "prompt": "Find my press coverage.",
+      "expected_output": "A shortlist of at most 10 reachable editorial links rendered as a pick-list with one short line asking the artist to confirm which are actually about them. Nothing is saved this turn.",
+      "assertions": [
+        "Only editorial coverage is listed — no social, streaming, Wikipedia, or event-listing hosts",
+        "The shortlist holds at most 10 links and no two share a host and path",
+        "States that nothing is saved until the artist picks on the next turn",
+        "loudmouth.example/reviews/leonie-solo does not appear in the shortlist",
+        "The search is narrowed with the Montreal / francophone pop / Nuit Blanche context"
+      ]
+    },
+    {
+      "id": 3,
+      "skill": null,
+      "prompt": "Write my long bio.",
+      "expected_output": "A 3-5 paragraph third-person bio in the artist's locale built only from profile facts, working around anything missing without naming the gap.",
+      "assertions": [
+        "Third person throughout",
+        "Contains no name, date, venue, or number absent from the profile",
+        "Does not write 'information not available' or leave a bracketed placeholder",
+        "Language follows preferred_locale only, with no mixed-language output",
+        "Long form is 3-5 paragraphs covering journey, style, and current project"
+      ]
+    },
+    {
+      "id": 4,
+      "skill": "presskit-build",
+      "prompt": "Looks good, generate it.",
+      "expected_output": "Names the preconditions it checked, reports the palette it derived and which slide sections came back empty, and hands back this run's Slides and PDF links in the artist's own Drive.",
+      "assertions": [
+        "Names both preconditions it checked — an artist name or bio on file, and a connected Google account — and refuses outright if either is missing",
+        "Lists which of the nine slides came back empty, each labelled exactly 'To be completed' or 'À compléter'",
+        "Calls the deliverable a Presskit and never an EPK, in either language",
+        "Hands back exactly two links from this run, a Google Slides edit URL and a Drive PDF URL, and no older deck link",
+        "Says which palette it used, or that it fell back to violet #8b5cf6 on white",
+        "Says the files are in the artist's own Drive and that nothing was sent or published for them"
+      ]
+    },
+    {
+      "id": 5,
+      "skill": null,
+      "given": {
+        "artist.presskit": [
+          {
+            "id": 1,
+            "short_bio": null,
+            "long_bio": null,
+            "current_version": null
+          }
+        ],
+        "artist.presskit_items": [
+          {
+            "kind": "clipping",
+            "dedupe_key": "https://ledevoir.example/a",
+            "status": "suggested",
+            "source": "presskit-find-press",
+            "data": {
+              "outlet": "Le Devoir",
+              "title": "Un folk sans ornement"
+            }
+          }
+        ]
+      },
+      "prompt": "Why is my press slide empty? I gave you an article last week.",
+      "expected_output": "Explains that the article is saved but still `suggested` — found by the search and not yet confirmed by the artist — so the generator leaves it off the deck by design. Cites the knowledge page that states the rule, then names presskit-run-intake as where to confirm it. Writes nothing.",
+      "assertions": [
+        "Explains that a `suggested` item is deliberately excluded from the deck until the artist confirms it",
+        "Names the actual clipping (Le Devoir) rather than answering generically",
+        "Attaches the knowledge file or URL behind the claim",
+        "Routes the fix to a named skill instead of doing it",
+        "Writes nothing — no artist:set, no generated deck",
+        "Answers in the artist's preferred_locale, no markdown or emojis"
+      ]
+    },
+    {
+      "id": 6,
+      "skill": null,
+      "given": {
+        "artist.presskit_items": [
+          {
+            "kind": "clipping",
+            "dedupe_key": "https://panm360.com/x",
+            "status": "suggested",
+            "source": "presskit-find-press",
+            "data": {
+              "title": "Odile Ray | Regle d'or",
+              "outlet": "PAN M 360",
+              "url": "https://panm360.com/x"
+            }
+          }
+        ]
+      },
+      "prompt": "Why is my press slide empty? I thought you found articles about me.",
+      "expected_output": "Explains that the article was found by the search and is waiting on her confirmation, so it is deliberately kept off the deck; names presskit-run-intake as where to confirm it. Reads only; changes nothing.",
+      "assertions": [
+        "Explains that a suggested clipping is deliberately excluded from the deck until confirmed",
+        "Names the actual PAN M 360 article rather than answering generically",
+        "Names the skill that would confirm it (presskit-run-intake), rather than confirming it itself",
+        "Calls no artist:set and writes nothing",
+        "Cites the knowledge file or the row behind the claim",
+        "Answers in the artist's preferred_locale"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+---
+description: Repo conventions for House Label
+alwaysApply: true
+---
+
+Read **AGENTS.md** at the repo root before making changes. It is the single
+source of truth for this repo's conventions, and it is deliberately not
+summarised here — a second copy drifts from the first.

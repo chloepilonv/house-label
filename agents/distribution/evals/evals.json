@@ -1,0 +1,606 @@
+{
+  "agent": "distribution",
+  "evals": [
+    {
+      "id": 1,
+      "skill": "distribution-compare-services",
+      "given": {
+        "catalog.distribution_services": [
+          {
+            "id": "distrokid",
+            "name": "DistroKid",
+            "url": "https://distrokid.com",
+            "description": "Unlimited uploads on a yearly subscription; keeps none of the recording royalties.",
+            "layer": "artist_facing",
+            "hq_country": "US",
+            "operating_status": "active",
+            "submission_policy": "open",
+            "currency": "USD",
+            "fee_model": "subscription",
+            "price_tiers": "[{\"plan\":\"Musician\",\"amount\":22.99,\"period\":\"year\",\"artists\":1,\"cut_pct\":0}]",
+            "cut_streaming_pct": 0,
+            "cad_pricing": false,
+            "lifecycle": "active",
+            "source": "crawl_tinyfish",
+            "source_url": "https://distrokid.com/pricing"
+          },
+          {
+            "id": "cd-baby",
+            "name": "CD Baby",
+            "url": "https://cdbaby.com",
+            "description": "One-time fee per release, then a share of the recording royalties.",
+            "layer": "artist_facing",
+            "hq_country": "US",
+            "operating_status": "active",
+            "submission_policy": "open",
+            "currency": "USD",
+            "fee_model": "per_release",
+            "price_tiers": "[{\"plan\":\"Standard album\",\"amount\":29.0,\"period\":\"one_time\",\"cut_pct\":9}]",
+            "cut_streaming_pct": 9,
+            "cad_pricing": false,
+            "lifecycle": "active",
+            "source": "crawl_tinyfish",
+            "source_url": "https://cdbaby.com/pricing"
+          },
+          {
+            "id": "distribution-amplitude",
+            "name": "Distribution Amplitude",
+            "url": "https://amplitudedistribution.com",
+            "description": "Quebec non-profit distributor; the only one in the set that prices in Canadian dollars.",
+            "layer": "artist_facing",
+            "hq_country": "CA",
+            "hq_city": "Montreal",
+            "nonprofit": true,
+            "operating_status": "active",
+            "submission_policy": "application",
+            "currency": "CAD",
+            "fee_model": "subscription",
+            "price_tiers": "[{\"plan\":\"Membre\",\"amount\":75.0,\"period\":\"year\",\"cut_pct\":0}]",
+            "cut_streaming_pct": 0,
+            "cad_pricing": true,
+            "canadian_office": "Montreal, QC",
+            "grant_eligibility_ca": [
+              "factor",
+              "musicaction",
+              "fonds-radiostar"
+            ],
+            "french_support": true,
+            "lifecycle": "active",
+            "source": "crawl_tinyfish",
+            "source_url": "https://amplitudedistribution.com/adhesion"
+          },
+          {
+            "id": "zimbalam",
+            "name": "Zimbalam",
+            "url": "https://zimbalam.com",
+            "description": "Folded into Believe; no longer accepting artists.",
+            "layer": "artist_facing",
+            "hq_country": "FR",
+            "operating_status": "ceased",
+            "submission_policy": "closed",
+            "lifecycle": "retired",
+            "source": "crawl_tinyfish",
+            "source_url": "https://zimbalam.com"
+          }
+        ]
+      },
+      "prompt": "I'm a folk artist in Montreal, about to put out my second album. I've been uploading to nothing so far — friends just send each other the files. What should I use to get it on Spotify, and roughly what will it cost me?",
+      "expected_output": "A short ranked shortlist from catalog.distribution_services, each with its real fee and the cut it takes, flagging that Distribution Amplitude prices in CAD while everything else is USD, and that its membership is claimed to carry FACTOR/Musicaction eligibility — attributed to Amplitude, not stated as fact.",
+      "assertions": [
+        "Every distributor named exists in catalog.distribution_services — none invented",
+        "Names Distribution Amplitude and flags that it is the only CAD-priced option, so other prices are pre-exchange",
+        "The FACTOR / Musicaction eligibility is attributed to Amplitude's own claim, not asserted as verified",
+        "Each option carries both its fee AND its cut, never one without the other",
+        "Does not present a distributor whose lifecycle is not 'active'",
+        "Zimbalam, the retired row, appears nowhere in the shortlist"
+      ]
+    },
+    {
+      "id": 2,
+      "skill": null,
+      "given": {
+        "catalog.distribution_services": [
+          {
+            "id": "distrokid",
+            "name": "DistroKid",
+            "url": "https://distrokid.com",
+            "description": "Unlimited uploads on a yearly subscription; keeps none of the recording royalties.",
+            "layer": "artist_facing",
+            "hq_country": "US",
+            "operating_status": "active",
+            "submission_policy": "open",
+            "currency": "USD",
+            "fee_model": "subscription",
+            "price_tiers": "[{\"plan\":\"Musician\",\"amount\":22.99,\"period\":\"year\",\"artists\":1,\"cut_pct\":0}]",
+            "cut_streaming_pct": 0,
+            "publishing_admin": false,
+            "neighbouring_rights": false,
+            "lifecycle": "active",
+            "source": "crawl_tinyfish",
+            "source_url": "https://distrokid.com/pricing"
+          }
+        ]
+      },
+      "prompt": "DistroKid says I keep 100% of my royalties. So I'm collecting everything my music earns, right?",
+      "expected_output": "No. It is 100% of recording royalties only. Songwriting money runs through SOCAN (or ASCAP/BMI plus The MLC) and performer money through Re:Sound or SoundExchange, and a distributor never touches either — so an artist with only a distributor is leaving two pots uncollected.",
+      "assertions": [
+        "Answers no, and separates recording royalties from songwriting royalties explicitly",
+        "Names SOCAN for Canada, and ASCAP/BMI plus The MLC for the US",
+        "Names the neighbouring-rights pot separately (Re:Sound / SoundExchange)",
+        "States that the distributor collects none of the other two",
+        "Routes the artist to the rights department rather than doing that work itself"
+      ]
+    },
+    {
+      "id": 3,
+      "skill": null,
+      "given": {
+        "catalog.distribution_services": [
+          {
+            "id": "distrokid",
+            "name": "DistroKid",
+            "url": "https://distrokid.com",
+            "description": "Unlimited uploads on a yearly subscription; keeps none of the recording royalties.",
+            "layer": "artist_facing",
+            "hq_country": "US",
+            "operating_status": "active",
+            "submission_policy": "open",
+            "currency": "USD",
+            "fee_model": "subscription",
+            "price_tiers": "[{\"plan\":\"Musician\",\"amount\":22.99,\"period\":\"year\",\"artists\":1,\"cut_pct\":0}]",
+            "cut_streaming_pct": 0,
+            "store_count_claimed": "150+",
+            "bandcamp_delivery": false,
+            "soundcloud_delivery": false,
+            "lifecycle": "active",
+            "source": "crawl_tinyfish",
+            "source_url": "https://distrokid.com/pricing"
+          },
+          {
+            "id": "cd-baby",
+            "name": "CD Baby",
+            "url": "https://cdbaby.com",
+            "description": "One-time fee per release, then a share of the recording royalties.",
+            "layer": "artist_facing",
+            "hq_country": "US",
+            "operating_status": "active",
+            "submission_policy": "open",
+            "currency": "USD",
+            "fee_model": "per_release",
+            "price_tiers": "[{\"plan\":\"Standard album\",\"amount\":29.0,\"period\":\"one_time\",\"cut_pct\":9}]",
+            "cut_streaming_pct": 9,
+            "store_count_claimed": "150+",
+            "bandcamp_delivery": false,
+            "soundcloud_delivery": false,
+            "lifecycle": "active",
+            "source": "crawl_tinyfish",
+            "source_url": "https://cdbaby.com/pricing"
+          }
+        ]
+      },
+      "prompt": "Will DistroKid put my album on Bandcamp too?",
+      "expected_output": "No. No standard distributor delivers to Bandcamp — the artist creates a Bandcamp account and uploads there themselves. SoundCloud is effectively the same, since it runs its own distributor rather than accepting deliveries.",
+      "assertions": [
+        "Answers no plainly, without hedging into 'check with them'",
+        "States that this is true of standard distributors generally, not a DistroKid quirk",
+        "Tells the artist the actual remedy: upload to Bandcamp themselves",
+        "Does not cite a store count like '150+' as evidence of what is or isn't covered"
+      ]
+    },
+    {
+      "id": 4,
+      "skill": null,
+      "given": {
+        "catalog.distribution_services": [
+          {
+            "id": "distrokid",
+            "name": "DistroKid",
+            "url": "https://distrokid.com",
+            "description": "Unlimited uploads on a yearly subscription; keeps none of the recording royalties.",
+            "layer": "artist_facing",
+            "hq_country": "US",
+            "operating_status": "active",
+            "submission_policy": "open",
+            "currency": "USD",
+            "fee_model": "subscription",
+            "price_tiers": "[{\"plan\":\"Musician\",\"amount\":22.99,\"period\":\"year\",\"artists\":1,\"cut_pct\":0}]",
+            "cut_streaming_pct": 0,
+            "lifecycle": "active",
+            "source": "crawl_tinyfish",
+            "source_url": "https://distrokid.com/pricing"
+          },
+          {
+            "id": "awal",
+            "name": "AWAL",
+            "url": "https://www.awal.com",
+            "description": "Selective, application-only tier. Publishes no rate and no price list anywhere on its site.",
+            "layer": "artist_facing",
+            "hq_country": "UK",
+            "parent_company": "Sony Music Entertainment",
+            "operating_status": "active",
+            "submission_policy": "application",
+            "apply_url": "https://apply.awal.com",
+            "traction_required": true,
+            "fee_model": "negotiated",
+            "price_tiers": "[]",
+            "advances_offered": true,
+            "sync_offered": true,
+            "not_stated": [
+              "cut_streaming_pct",
+              "price_tiers",
+              "term_length"
+            ],
+            "lifecycle": "active",
+            "source": "crawl_tinyfish",
+            "source_url": "https://www.awal.com"
+          }
+        ]
+      },
+      "prompt": "I've got decent numbers now — around 40k monthly listeners. What cut would AWAL take, and is it better than what I'm paying DistroKid?",
+      "expected_output": "AWAL publishes no rate. Reported figures put its entry tier around 15%, but that is a third party's account and must be labelled as such. The comparison is not 15% against 0%: a DIY fee buys delivery, a negotiated share buys marketing, pitching, sync and often an advance.",
+      "assertions": [
+        "States that AWAL does not publish a rate anywhere",
+        "Any percentage given is explicitly labelled as reported by a third party, not published by AWAL",
+        "Does not write a reported figure into a field or present it as catalog data",
+        "Makes the point that the two tiers are different products, not the same product at two prices",
+        "Mentions that the selective tier gates on traction, and does not promise acceptance",
+        "Says 'they don't publish it' rather than reporting the empty cut as unknown or as zero"
+      ]
+    },
+    {
+      "id": 5,
+      "skill": null,
+      "given": {
+        "catalog.distribution_services": [
+          {
+            "id": "too-lost",
+            "name": "Too Lost",
+            "url": "https://toolost.com",
+            "description": "Subscription distributor, and the only one in the set that publishes what happens when a subscription lapses.",
+            "layer": "artist_facing",
+            "hq_country": "US",
+            "operating_status": "active",
+            "submission_policy": "open",
+            "currency": "USD",
+            "fee_model": "subscription",
+            "price_tiers": "[{\"plan\":\"Starter\",\"amount\":13.99,\"period\":\"year\",\"cut_pct\":0}]",
+            "cut_streaming_pct": 0,
+            "lapse_behavior": "Releases stay live; royalty share drops from 100% to 85% until the subscription is renewed.",
+            "lifecycle": "active",
+            "source": "crawl_tinyfish",
+            "source_url": "https://toolost.com/pricing"
+          },
+          {
+            "id": "distrokid",
+            "name": "DistroKid",
+            "url": "https://distrokid.com",
+            "description": "Unlimited uploads on a yearly subscription; keeps none of the recording royalties.",
+            "layer": "artist_facing",
+            "hq_country": "US",
+            "operating_status": "active",
+            "submission_policy": "open",
+            "currency": "USD",
+            "fee_model": "subscription",
+            "price_tiers": "[{\"plan\":\"Musician\",\"amount\":22.99,\"period\":\"year\",\"artists\":1,\"cut_pct\":0}]",
+            "cut_streaming_pct": 0,
+            "not_stated": [
+              "lapse_behavior"
+            ],
+            "lifecycle": "active",
+            "source": "crawl_tinyfish",
+            "source_url": "https://distrokid.com/pricing"
+          },
+          {
+            "id": "cd-baby",
+            "name": "CD Baby",
+            "url": "https://cdbaby.com",
+            "description": "One-time fee per release, then a share of the recording royalties.",
+            "layer": "artist_facing",
+            "hq_country": "US",
+            "operating_status": "active",
+            "submission_policy": "open",
+            "currency": "USD",
+            "fee_model": "per_release",
+            "price_tiers": "[{\"plan\":\"Standard album\",\"amount\":29.0,\"period\":\"one_time\",\"cut_pct\":9}]",
+            "cut_streaming_pct": 9,
+            "lifecycle": "active",
+            "source": "crawl_tinyfish",
+            "source_url": "https://cdbaby.com/pricing"
+          }
+        ]
+      },
+      "prompt": "I'm on Too Lost and thinking of stopping my subscription to save money, but I want my album to stay up. What happens?",
+      "expected_output": "Too Lost is the one company that publishes this: releases stay live and the artist drops from 100% to 85% of royalties until they re-subscribe. It should also say that almost no other distributor publishes its lapse policy, so the same question cannot be answered for them from published information.",
+      "assertions": [
+        "Gives the 85% figure and attributes it to Too Lost's own published terms",
+        "States that the releases stay live rather than being taken down",
+        "Notes that other distributors do not publish this, rather than guessing on their behalf",
+        "Does not invent a lapse policy for any distributor that has not published one",
+        "Distinguishes DistroKid's not_stated lapse policy — read and genuinely absent — from a field nobody checked"
+      ]
+    },
+    {
+      "id": 6,
+      "skill": "distribution-prepare-package",
+      "given": {
+        "catalog.distribution_services": [
+          {
+            "id": "distrokid",
+            "name": "DistroKid",
+            "url": "https://distrokid.com",
+            "description": "Unlimited uploads on a yearly subscription; keeps none of the recording royalties.",
+            "layer": "artist_facing",
+            "hq_country": "US",
+            "operating_status": "active",
+            "submission_policy": "open",
+            "currency": "USD",
+            "fee_model": "subscription",
+            "price_tiers": "[{\"plan\":\"Musician\",\"amount\":22.99,\"period\":\"year\",\"artists\":1,\"cut_pct\":0}]",
+            "cut_streaming_pct": 0,
+            "cad_pricing": false,
+            "lifecycle": "active",
+            "source": "crawl_tinyfish",
+            "source_url": "https://distrokid.com/pricing",
+            "artwork_formats": [
+              "jpg"
+            ],
+            "artwork_min_px": 1000,
+            "audio_formats": [
+              "wav",
+              "mp3",
+              "m4a",
+              "flac",
+              "aiff",
+              "wma"
+            ],
+            "spec_url": "https://support.distrokid.com/hc/en-us/sections/360004443533-Formatting-Details"
+          },
+          {
+            "id": "cd-baby",
+            "name": "CD Baby",
+            "url": "https://cdbaby.com",
+            "description": "One-time fee per release, then a share of the recording royalties.",
+            "layer": "artist_facing",
+            "hq_country": "US",
+            "operating_status": "active",
+            "submission_policy": "open",
+            "currency": "USD",
+            "fee_model": "per_release",
+            "price_tiers": "[{\"plan\":\"Standard album\",\"amount\":29.0,\"period\":\"one_time\",\"cut_pct\":9}]",
+            "cut_streaming_pct": 9,
+            "cad_pricing": false,
+            "lifecycle": "active",
+            "source": "crawl_tinyfish",
+            "source_url": "https://cdbaby.com/pricing",
+            "artwork_formats": [
+              "png",
+              "gif",
+              "jpg",
+              "jpeg"
+            ],
+            "artwork_min_px": 1400,
+            "artwork_max_px": 3000,
+            "audio_formats": [
+              "wav",
+              "flac"
+            ],
+            "spec_url": "https://support.cdbaby.com/hc/en-us/articles/360037660592-Artwork-Requirements"
+          },
+          {
+            "id": "distribution-amplitude",
+            "name": "Distribution Amplitude",
+            "url": "https://amplitudedistribution.com",
+            "description": "Quebec non-profit distributor; the only one in the set that prices in Canadian dollars.",
+            "layer": "artist_facing",
+            "hq_country": "CA",
+            "hq_city": "Montreal",
+            "nonprofit": true,
+            "operating_status": "active",
+            "submission_policy": "application",
+            "currency": "CAD",
+            "fee_model": "subscription",
+            "price_tiers": "[{\"plan\":\"Membre\",\"amount\":75.0,\"period\":\"year\",\"cut_pct\":0}]",
+            "cut_streaming_pct": 0,
+            "cad_pricing": true,
+            "canadian_office": "Montreal, QC",
+            "grant_eligibility_ca": [
+              "factor",
+              "musicaction",
+              "fonds-radiostar"
+            ],
+            "french_support": true,
+            "lifecycle": "active",
+            "source": "crawl_tinyfish",
+            "source_url": "https://amplitudedistribution.com/adhesion",
+            "artwork_formats": [],
+            "audio_formats": []
+          },
+          {
+            "id": "zimbalam",
+            "name": "Zimbalam",
+            "url": "https://zimbalam.com",
+            "description": "Folded into Believe; no longer accepting artists.",
+            "layer": "artist_facing",
+            "hq_country": "FR",
+            "operating_status": "ceased",
+            "submission_policy": "closed",
+            "lifecycle": "retired",
+            "source": "crawl_tinyfish",
+            "source_url": "https://zimbalam.com"
+          }
+        ],
+        "artist.profile": [
+          {
+            "country": "CA",
+            "region": "QC",
+            "preferred_locale": "fr",
+            "artist_name": "Odile Ray"
+          }
+        ],
+        "artist.releases": [
+          {
+            "title": "Sables",
+            "release_type": "ep",
+            "release_date": "2027-04-16",
+            "distributor": "CD Baby",
+            "upc": null,
+            "cover_art_url": null
+          }
+        ]
+      },
+      "prompt": "My EP Sables comes out April 16th through CD Baby. My cover is a 1200x1200 PNG with my Instagram handle in the corner, and my masters are 24-bit WAVs. Am I good to go?",
+      "expected_output": "Three separate failures, each named with whose rule it is. (1) The Instagram handle is an automatic rejection at every store regardless of distributor — content, not specification, and the first thing to fix. (2) 1200px is below CD Baby's stated 1400px minimum, so CD Baby refuses it; the store baseline would have accepted it, and saying which is which matters. (3) PNG is fine — CD Baby accepts png, gif, jpg and jpeg. The 24-bit WAVs are fine and must be delivered exactly as mastered, not converted. It must also compute the timing: Spotify's editorial pitch closes 7 days before April 16th, and CD Baby's delivery window stacks on top of that. It must not claim to have submitted anything.",
+      "assertions": [
+        "Names the Instagram handle as a rejection cause and does not treat it as cosmetic",
+        "Says 1200px fails CD BABY's 1400px minimum, attributing the rule to CD Baby rather than to the stores",
+        "Does not say the artwork must be 3000x3000 as a requirement",
+        "Confirms PNG is accepted by CD Baby rather than demanding JPG",
+        "Does not tell the artist to convert or upconvert the 24-bit WAVs",
+        "Computes the Spotify 7-day pitch deadline against the April 16th date",
+        "Never claims the release was submitted or uploaded"
+      ]
+    },
+    {
+      "id": 7,
+      "skill": "distribution-compare-services",
+      "given": {
+        "catalog.distribution_services": [
+          {
+            "id": "distrokid",
+            "name": "DistroKid",
+            "url": "https://distrokid.com",
+            "description": "Unlimited uploads on a yearly subscription; keeps none of the recording royalties.",
+            "layer": "artist_facing",
+            "hq_country": "US",
+            "operating_status": "active",
+            "submission_policy": "open",
+            "currency": "USD",
+            "fee_model": "subscription",
+            "price_tiers": "[{\"plan\":\"Musician\",\"amount\":22.99,\"period\":\"year\",\"artists\":1,\"cut_pct\":0}]",
+            "cut_streaming_pct": 0,
+            "cad_pricing": false,
+            "lifecycle": "active",
+            "source": "crawl_tinyfish",
+            "source_url": "https://distrokid.com/pricing",
+            "artwork_formats": [
+              "jpg"
+            ],
+            "artwork_min_px": 1000,
+            "audio_formats": [
+              "wav",
+              "mp3",
+              "m4a",
+              "flac",
+              "aiff",
+              "wma"
+            ],
+            "spec_url": "https://support.distrokid.com/hc/en-us/sections/360004443533-Formatting-Details"
+          },
+          {
+            "id": "cd-baby",
+            "name": "CD Baby",
+            "url": "https://cdbaby.com",
+            "description": "One-time fee per release, then a share of the recording royalties.",
+            "layer": "artist_facing",
+            "hq_country": "US",
+            "operating_status": "active",
+            "submission_policy": "open",
+            "currency": "USD",
+            "fee_model": "per_release",
+            "price_tiers": "[{\"plan\":\"Standard album\",\"amount\":29.0,\"period\":\"one_time\",\"cut_pct\":9}]",
+            "cut_streaming_pct": 9,
+            "cad_pricing": false,
+            "lifecycle": "active",
+            "source": "crawl_tinyfish",
+            "source_url": "https://cdbaby.com/pricing",
+            "artwork_formats": [
+              "png",
+              "gif",
+              "jpg",
+              "jpeg"
+            ],
+            "artwork_min_px": 1400,
+            "artwork_max_px": 3000,
+            "audio_formats": [
+              "wav",
+              "flac"
+            ],
+            "spec_url": "https://support.cdbaby.com/hc/en-us/articles/360037660592-Artwork-Requirements"
+          },
+          {
+            "id": "distribution-amplitude",
+            "name": "Distribution Amplitude",
+            "url": "https://amplitudedistribution.com",
+            "description": "Quebec non-profit distributor; the only one in the set that prices in Canadian dollars.",
+            "layer": "artist_facing",
+            "hq_country": "CA",
+            "hq_city": "Montreal",
+            "nonprofit": true,
+            "operating_status": "active",
+            "submission_policy": "application",
+            "currency": "CAD",
+            "fee_model": "subscription",
+            "price_tiers": "[{\"plan\":\"Membre\",\"amount\":75.0,\"period\":\"year\",\"cut_pct\":0}]",
+            "cut_streaming_pct": 0,
+            "cad_pricing": true,
+            "canadian_office": "Montreal, QC",
+            "grant_eligibility_ca": [
+              "factor",
+              "musicaction",
+              "fonds-radiostar"
+            ],
+            "french_support": true,
+            "lifecycle": "active",
+            "source": "crawl_tinyfish",
+            "source_url": "https://amplitudedistribution.com/adhesion",
+            "artwork_formats": [],
+            "audio_formats": []
+          },
+          {
+            "id": "zimbalam",
+            "name": "Zimbalam",
+            "url": "https://zimbalam.com",
+            "description": "Folded into Believe; no longer accepting artists.",
+            "layer": "artist_facing",
+            "hq_country": "FR",
+            "operating_status": "ceased",
+            "submission_policy": "closed",
+            "lifecycle": "retired",
+            "source": "crawl_tinyfish",
+            "source_url": "https://zimbalam.com"
+          }
+        ],
+        "artist.profile": [
+          {
+            "country": "CA",
+            "region": "QC",
+            "preferred_locale": "fr",
+            "artist_name": "Odile Ray"
+          }
+        ],
+        "artist.memory": [
+          {
+            "agent": "distribution",
+            "key": "ruled_out:unitedmasters",
+            "value": "Ruled out UnitedMasters — wants no rights involvement at all.",
+            "kind": "fact",
+            "language": "en",
+            "source": "conversation"
+          }
+        ]
+      },
+      "prompt": "Je suis avec CD Baby, j'ai 4 sorties en ligne et je fais environ 1 500 $ par annee en streaming. Ca vaut-tu la peine de changer?",
+      "expected_output": "An answer in French. The effective rate is the whole comparison: CD Baby's 9% of $1,500 is about $135 a year against DistroKid's flat $22.99, so switching saves roughly $110 a year — but four releases have to come down and go back up, losing their stream counts and playlist positions, which is the cost that decides it. Distribution Amplitude must be named as the only CAD-priced option with the grant-eligibility claim marked as the company's own and unverified. UnitedMasters must not be proposed, or if mentioned, must be flagged as already ruled out. Any field nobody has read must be reported as unchecked, never as zero or free.",
+      "assertions": [
+        "Answers in French",
+        "Computes an effective rate from the $1,500 figure rather than comparing headline prices",
+        "Names the cost of moving 4 releases, including lost stream counts and playlist positions",
+        "Names Distribution Amplitude as the only CAD-priced option",
+        "Marks the Amplitude grant-eligibility claim as the company's own and unverified",
+        "Does not propose UnitedMasters without saying it was already ruled out",
+        "Reports unread fields as unchecked, never as 0% or free",
+        "Does not create an account or claim to have signed the artist up"
+      ]
+    }
+  ]
+}

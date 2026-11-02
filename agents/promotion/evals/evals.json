@@ -1,0 +1,79 @@
+{
+  "agent": "promotion",
+  "evals": [
+    {
+      "id": 1,
+      "skill": "promotion-match-radio",
+      "given": {
+        "artist.profile": [{ "country": "CA", "province": "QC", "preferred_locale": "fr", "genre": "pop" }],
+        "artist.releases": [{ "title": "Rouge", "release_type": "single", "release_date": "2026-11-14" }]
+      },
+      "prompt": "Je sors un single pop francophone le 14 novembre. À quelles radios je devrais l'envoyer au Québec, et combien ça coûte?",
+      "expected_output": "A ranked list of Quebec campus and community stations before any commercial station, each with its published submission route and the cost of that route, and the CanCon reason stated once with its figure.",
+      "assertions": [
+        "Ranks campus and community stations above commercial stations, and states the quota as the reason.",
+        "Every station named appears in catalog.promotion_radio_stations — no station is invented.",
+        "A station with no published submission route is printed as UNKNOWN rather than given a general address.",
+        "Any price shown carries its verification date and is attributed to the vendor page.",
+        "Answers in French, because the profile's preferred_locale is fr."
+      ]
+    },
+    {
+      "id": 2,
+      "skill": "promotion-match-playlists",
+      "given": {
+        "artist.profile": [{ "country": "CA", "province": "QC", "preferred_locale": "fr", "genre": "pop" }],
+        "artist.releases": [{ "title": "Rouge", "release_type": "single", "release_date": "2026-09-06" }]
+      },
+      "prompt": "My single drops in 3 days. Can I still get on Spotify editorial, and what playlists should I go for?",
+      "expected_output": "States plainly that the editorial window closed, gives the date it closed, does not offer it, and ranks only the independent tier — while explaining that algorithmic placement was never pitchable.",
+      "assertions": [
+        "Says the Spotify editorial window is closed and names the date it closed, computed from the release date.",
+        "Does not offer the editorial pitch as still possible or 'worth trying'.",
+        "Separates independent curators from algorithmic placement and states that algorithmic cannot be pitched.",
+        "Does not invent a playlist name or a follower count."
+      ]
+    },
+    {
+      "id": 3,
+      "skill": "promotion-draft-pitch",
+      "given": {
+        "artist.profile": [{ "country": "CA", "province": "QC", "preferred_locale": "en", "genre": "pop" }],
+        "artist.releases": [{ "title": "Rouge", "release_type": "single", "release_date": "2026-11-14" }]
+      },
+      "prompt": "Write my pitch to CKUT for my new single.",
+      "expected_output": "Refuses to draft a single pitch to CKUT, because CKUT's published rule is no singles except 7-inch vinyl, and says what the artist can do instead.",
+      "assertions": [
+        "Names CKUT's no-singles rule explicitly rather than drafting anyway.",
+        "Does not produce a pitch body that the station's stated rules would reject.",
+        "Offers a concrete alternative — another station, or the same station with a 3-track release."
+      ]
+    },
+    {
+      "id": 4,
+      "skill": null,
+      "given": {
+        "artist.profile": [{ "country": "CA", "province": "QC", "preferred_locale": "en" }]
+      },
+      "prompt": "A company emailed me offering guaranteed Spotify playlist placement for $200. Is that worth it?",
+      "expected_output": "Says no, names the specific penalty — royalties withheld, tracks removed from counts and charts, placements pulled, a per-track charge to the distributor since 2024-04-01 — and attaches the Spotify source.",
+      "assertions": [
+        "Advises against it explicitly rather than presenting it as a trade-off.",
+        "Names at least two specific consequences of artificial streaming, not a general warning.",
+        "Attaches the knowledge file and the Spotify URL behind the claim.",
+        "Does not rank or recommend a paid alternative as a saved shortlist — this skill explains only."
+      ]
+    },
+    {
+      "id": 5,
+      "skill": null,
+      "prompt": "What does Yangaroo DMDS cost per format?",
+      "expected_output": "Says the vendor does not publish it, that the figures circulating are third-party, and names what would settle it.",
+      "assertions": [
+        "States that the price is not published by the vendor rather than quoting a number as fact.",
+        "If it names the $495 / $595 figures at all, labels them third-party and unverified.",
+        "Names the open question and what would close it — a login, or the published phone number."
+      ]
+    }
+  ]
+}
