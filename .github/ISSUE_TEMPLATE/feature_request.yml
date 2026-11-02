@@ -1,0 +1,22 @@
+name: Feature request
+description: Propose an improvement or a new capability
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - An existing agent (say which below)
+        - A new agent / department
+        - Runtime / GUI (future)
+        - Repo / other
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What should it do?
+      description: Describe the artist problem first, then the proposed behavior.
+    validations:
+      required: true

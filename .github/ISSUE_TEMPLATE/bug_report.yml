@@ -1,0 +1,35 @@
+name: Bug report
+description: Something is wrong or inaccurate
+labels: ["bug"]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Which part of the label is affected?
+      options:
+        - Presskit (Presskit Agent)
+        - Press relations (Press Agent)
+        - Marketing campaigns (Digital Marketing Agent)
+        - Rights (Rights Agent)
+        - Platforms (Platforms Agent)
+        - Distribution (Distribution Agent)
+        - Promotion (Promotion Agent)
+        - Release plan (Label Management Agent)
+        - Knowledge (a wrong claim in any department's knowledge file)
+        - Repo / other
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: For knowledge inaccuracies, quote the wrong claim and link a source for the correct one.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: false

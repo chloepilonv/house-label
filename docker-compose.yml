@@ -1,0 +1,53 @@
+# Local Postgres for development — ONE container holding TWO databases.
+#
+#   music_label_artist    the artist's own data      → DATABASE_URL
+#   music_label_catalog   NOT the catalog — the workshop the crawler writes
+#                         into (CATALOG_DATABASE_URL). The catalog is the file
+#                         data/catalog/catalog.sqlite; `catalog:load` fills
+#                         this from it and `catalog:build` writes it back.
+#
+# Two databases rather than two schemas because Postgres cannot join across
+# databases: the seam is enforced by the server instead of by convention. One
+# container rather than two because the isolation comes from the databases —
+# a second container would be cost without benefit.
+#
+# Artists never run the workshop: they read catalog.sqlite. The artist's
+# database is on the artist's machine, or their own hosted instance.
+#
+# `bun run dev:up` starts it. Host port 5433 (not 5432) to avoid clashing with
+# a system Postgres.
+
+# Pinned, not derived. Compose defaults the project name to the DIRECTORY name,
+# so a git worktree (.claude/worktrees/<feature>/) would get its own project and
+# try to start a SECOND Postgres on port 5433 — which fails with "port is
+# already allocated" and silently breaks `dev:up && dev:setup`. Since the repo
+# convention is a worktree per feature, every worktree must drive this one
+# container.
+name: house-label
+
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: music_label_artist
+    ports:
+      - "5433:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      # Creates music_label_catalog on first boot. Only runs when the volume is
+      # empty, so `dev:reset` (which drops the volume) is what re-triggers it.
+      - ./init-databases.sql:/docker-entrypoint-initdb.d/10-databases.sql:ro
+    # `dev:up` uses `--wait`, so it returns only once this passes — otherwise
+    # `dev:setup` races Postgres' first-boot initialization and fails.
+    healthcheck:
+      # -h 127.0.0.1 on purpose: during first-boot initdb a temporary server
+      # listens on the unix socket only, and a socket check would pass early.
+      test: ["CMD-SHELL", "pg_isready -U postgres -d music_label_artist -h 127.0.0.1"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+volumes:
+  db_data:

@@ -1,0 +1,242 @@
+name: Refresh catalog
+
+# The catalog is data/catalog/catalog.sqlite. Each run loads it into a
+# throwaway Postgres (the workshop, a service container that dies with the
+# job), refreshes the sources that are due, writes the file back, and opens a
+# PR with it. Merging the PR is what reaches artists — never the cron.
+#
+# Engines: TinyFish Fetch → TinyFish Agent → Puppeteer, per source.
+# See data/catalog/crawl/ for the engine and .github/workflows/README.md for
+# the cron convention this file follows.
+#
+# Required repo secrets:
+#   TINYFISH_API_KEY      — fetch layer
+#   ANTHROPIC_API_KEY     — derive layer (engine.ts reads it via `new Anthropic()`)
+#   ANTHROPIC_WORKSPACE_ID — required with an identity-linked ANTHROPIC_API_KEY,
+#                            unused otherwise. Without it such a key 400s on
+#                            every extraction (the 2026-08-31 run failed 139/139
+#                            sources this way).
+#
+# There is no topic matrix. Which topics crawl is a query
+# (`select distinct topic from catalog.crawl_sources where status='active'`),
+# and how often each SOURCE is due is `crawl_sources.cadence_days`. Adding a
+# crawl is an INSERT; changing a cadence is an UPDATE. Neither touches this file.
+
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Mondays 06:00 UTC — sources due less often self-skip
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Ignore cadence_days and refresh every active source"
+        type: boolean
+        default: false
+
+concurrency:
+  group: catalog
+  cancel-in-progress: false
+
+permissions:
+  contents: write        # the snapshot PR branch; main itself stays protected
+  pull-requests: write   # the snapshot PR
+  issues: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    # 139 sources refresh in ~40 minutes and the detail pass runs after them.
+    # The reference project had to split its crawl into separate jobs because
+    # one long job was cancelled every week; here the spend guard bounds the
+    # expensive half, so time only needs to be generous enough not to truncate
+    # honest work.
+    timeout-minutes: 180
+    # A step's `if` is evaluated BEFORE that step's own `env:` block is applied,
+    # and `secrets` is not a context a step `if` can read. So the report step's
+    # `env.RESEND_API_KEY != ''` was always false and the weekly email silently
+    # skipped every run — the exact ambiguity Rule 3 exists to remove. Job-level
+    # env is the only scope a step `if` can see.
+    env:
+      RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+      # The workshop: the service container below. Not a secret — it lives and
+      # dies with this job.
+      CATALOG_DATABASE_URL: postgres://postgres:postgres@localhost:5432/catalog_workshop
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: catalog_workshop
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+
+      # Rule 1: name the missing secret, in the summary, in under 30 seconds.
+      - name: Check required secrets
+        env:
+          TINYFISH_API_KEY: ${{ secrets.TINYFISH_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_WORKSPACE_ID: ${{ secrets.ANTHROPIC_WORKSPACE_ID }}
+        run: |
+          missing=""
+          for v in TINYFISH_API_KEY ANTHROPIC_API_KEY; do
+            [ -z "${!v}" ] && missing="$missing $v"
+          done
+          if [ -n "$missing" ]; then
+            {
+              echo "## Cannot run — missing repository secrets"
+              echo
+              for v in $missing; do echo "- \`$v\`"; done
+              echo
+              echo "Set them at Settings → Secrets and variables → Actions."
+            } >> "$GITHUB_STEP_SUMMARY"
+            echo "::error::Missing repository secrets:$missing"
+            exit 1
+          fi
+          if [ -z "$ANTHROPIC_WORKSPACE_ID" ]; then
+            echo "::notice::ANTHROPIC_WORKSPACE_ID is not set. An identity-linked ANTHROPIC_API_KEY will 400 on every extraction without it; a workspace-scoped key does not need it."
+          fi
+          echo "All required secrets present." >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - run: bun install --frozen-lockfile
+
+      # Chromium for the Puppeteer fallback
+      - run: bunx puppeteer browsers install chrome
+
+      # One topic failing must not block the others — run.ts isolates each
+      # topic, and each source, in its own try/catch.
+      # The deterministic half — mappers, URL handling, deadline parsing — is
+      # covered by tests that need no network. Failing here beats writing bad
+      # rows into the catalogue.
+      - name: Test the crawl's deterministic half
+        run: bun test data/catalog/
+
+      - name: Load catalog.sqlite into the workshop
+        run: bun run catalog:load
+
+      - name: Refresh every source that is due
+        run: bun run catalog:refresh ${{ inputs.force && '--force' || '' }}
+        env:
+          TINYFISH_API_KEY: ${{ secrets.TINYFISH_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_WORKSPACE_ID: ${{ secrets.ANTHROPIC_WORKSPACE_ID }}
+          GITHUB_SHA: ${{ github.sha }}
+
+      # Same detail-pass pattern for distributors: payout terms live in the
+      # help centre, one link past the page the crawl reads, and the crawl's
+      # own schema is kept too small to ask for them (see distribution/crawl.ts).
+      - name: Enrich distributor payout terms (capped)
+        run: bun run catalog:enrich:distribution
+        env:
+          TINYFISH_API_KEY: ${{ secrets.TINYFISH_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          ANTHROPIC_WORKSPACE_ID: ${{ secrets.ANTHROPIC_WORKSPACE_ID }}
+          CRAWL_BUDGET_USD: "10"
+
+      - name: Write the workshop back to catalog.sqlite
+        run: bun run catalog:build
+
+      # Desks only, never a person: a crawl that brought one back fails here,
+      # before the PR opens (data/catalog/privacy/check.ts).
+      - name: Privacy — no person's address in catalog.sqlite
+        run: bun run catalog:privacy
+
+      # The shipped file. Rule 6 says never publish on a schedule, so this opens
+      # a PR with data/catalog/catalog.sqlite and its manifest; merging is a
+      # person's decision. One branch, updated in place: a second Monday before
+      # the first merge refreshes the same PR rather than opening another.
+      - name: Open the snapshot PR
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: chore/catalog-snapshot
+          add-paths: |
+            data/catalog/catalog.sqlite
+            data/catalog/catalog.sqlite.manifest.json
+          commit-message: "chore(catalog): weekly snapshot"
+          title: "chore(catalog): weekly snapshot"
+          body: |
+            **Why:** the shipped catalog file is a week old.
+            **What:** `data/catalog/catalog.sqlite` refreshed by this week's crawl; row counts in the manifest beside it.
+            **Test:** `python3 data/catalog/query.py --datasets` · `bun run catalog:privacy` passed in this run.
+            **Risk:** none at read time; every agent reads this file as-is.
+          labels: catalog
+
+      # The recap: what is new, what moved, how complete each field is now, and
+      # what this run cost. Written to a file so the summary and the digest
+      # issue carry the same text.
+      - name: Write the weekly recap
+        if: always()
+        run: |
+          bun run catalog:report distribution | tee /tmp/digest.md >> "$GITHUB_STEP_SUMMARY"
+
+      # Rule 3. Two Mondays failed unnoticed. Never again.
+      # Rule 3 covers failure. This is the other half: a successful run should
+      # also reach the inbox, because "nothing arrived" is indistinguishable
+      # from "the cron is dead" — which is exactly how two silent Mondays went
+      # unnoticed.
+      # The weekly report, by email. Sends whether the run passed or failed:
+      # "nothing arrived" must never be ambiguous between a quiet week and a
+      # dead cron, which is exactly how two silent Mondays went unnoticed.
+      - name: Email the weekly report
+        if: always() && env.RESEND_API_KEY != ''
+        env:
+          REPORT_TO: ${{ secrets.RECAP_EMAIL_TO }}
+          REPORT_FROM: ${{ vars.RECAP_EMAIL_FROM || 'onboarding@resend.dev' }}
+        run: |
+          BODY="$(cat /tmp/digest.md 2>/dev/null || echo 'No recap produced — the run failed before the report step.')"
+          STATUS='${{ job.status }}'
+          RUN="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          # Built with printf, not a multi-line shell string: a bare line inside
+          # `run: |` must stay indented past the block scalar or YAML ends the
+          # block there and the workflow stops parsing. That is what happened.
+          TEXT="$(printf '%s\n\n%s\n\n%s' "$BODY" \
+            "Full run: $RUN" \
+            "Reaching artists stays manual: merge the chore/catalog-snapshot PR.")"
+          jq -n --arg from "$REPORT_FROM" --arg to "$REPORT_TO" \
+                --arg subject "Catalog refresh — $(date -u +%Y-%m-%d) ($STATUS)" \
+                --arg text "$TEXT" \
+                '{from:$from, to:[$to], subject:$subject, text:$text}' > /tmp/email.json
+          code=$(curl -s -o /tmp/resend.json -w '%{http_code}' -X POST https://api.resend.com/emails \
+            -H "Authorization: Bearer $RESEND_API_KEY" -H 'Content-Type: application/json' \
+            --data @/tmp/email.json)
+          echo "Resend HTTP $code"
+          [ "$code" = "200" ] || { cat /tmp/resend.json; echo "::warning::weekly report email failed"; }
+
+      - name: Email the weekly digest (as an issue)
+        if: success() && github.event_name == 'schedule'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.existsSync('/tmp/digest.md') ? fs.readFileSync('/tmp/digest.md', 'utf8') : '_No recap produced._';
+            const run = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            await github.rest.issues.create({
+              owner: context.repo.owner, repo: context.repo.repo,
+              title: `Catalog refresh — ${new Date().toISOString().slice(0,10)}`,
+              body: `${body}\n\n[Full run](${run})\n\nReaching artists stays manual: merge the \`chore/catalog-snapshot\` PR.`,
+              labels: ['catalog'],
+            });
+
+      - name: Open an issue on failure
+        if: failure() && github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUN: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          title="cron failed: ${{ github.workflow }}"
+          open=$(gh issue list --state open --search "$title in:title" --json number --jq 'length')
+          if [ "$open" != "0" ]; then
+            echo "An open issue already exists — not duplicating."
+            exit 0
+          fi
+          gh issue create --title "$title" --body "Scheduled catalog refresh failed on $(date -u +%Y-%m-%d).
+
+          Run: $RUN
+
+          Check the **Check required secrets** step first — a missing repository
+          secret is the most common cause and fails in under 30 seconds."

@@ -1,0 +1,108 @@
+{
+  "agent": "platforms",
+  "evals": [
+    {
+      "id": 1,
+      "skill": "platforms-log-numbers",
+      "prompt": "Just checked Spotify for Artists this morning — 4,212 monthly listeners and 318 followers. Instagram says 1,204 followers.",
+      "expected_output": "A confirmation table recording exactly the three figures given, each against its own platform and metric, dated to when the artist read them, marked self-reported, with unreported metrics shown as not reported.",
+      "assertions": [
+        "Records Spotify monthly listeners and Spotify followers as two separate metrics rather than one number",
+        "Metrics the artist did not report appear as not reported or a dash, never as 0",
+        "Describes the figures as self-reported by the artist rather than fetched or checked",
+        "Does not state a value for any Spotify or Instagram metric the artist did not name",
+        "Does not claim to have visited Spotify, Spotify for Artists, or Instagram"
+      ]
+    },
+    {
+      "id": 2,
+      "skill": "platforms-log-numbers",
+      "prompt": "Can you just pull my current Spotify monthly listeners and my Instagram follower count right now? My Spotify is open.spotify.com/artist/3TVXtAsR1Inumwj472S9r4 and my Instagram is @nuitblanche.",
+      "expected_output": "A clean refusal: it cannot read either platform, the reason is that both disallow this crawler and Instagram forbids automated collection outright, and the artist is told exactly which dashboard to open instead. No figure is produced for either platform.",
+      "assertions": [
+        "Produces no monthly-listener figure and no follower figure",
+        "Gives the reason as the platforms' robots.txt or terms rather than a temporary error or missing configuration",
+        "Names Spotify for Artists as where the artist reads their own Spotify numbers",
+        "Names Instagram Insights or the Instagram app as where the artist reads their own follower count",
+        "Offers to record the numbers once the artist reads them, rather than ending on the refusal",
+        "Does not offer to work around the block with an API key, a third-party service, or a different user agent"
+      ]
+    },
+    {
+      "id": 3,
+      "skill": "platforms-explain-metric",
+      "prompt": "Why do I have 4,000 monthly listeners but only 300 followers on Spotify? Am I doing something wrong?",
+      "expected_output": "A definition of each metric with its window, an explicit statement that the gap is normal because most listeners arrive through programming, and source links.",
+      "assertions": [
+        "States that monthly listeners counts a rolling 28-day window",
+        "States that followers is cumulative and has no window",
+        "Says the gap is normal rather than treating it as a problem to fix",
+        "Carries at least one source URL for the definitions",
+        "Does not state a target or healthy ratio between followers and monthly listeners"
+      ]
+    },
+    {
+      "id": 4,
+      "skill": "platforms-explain-metric",
+      "given": {
+        "artist.profile": {
+          "artist_name": "Nuit Blanche",
+          "country": "CA",
+          "city": "Montréal"
+        }
+      },
+      "prompt": "My album just passed 2 million streams. Is that gold?",
+      "expected_output": "Answered against Music Canada because the artist is Canadian: 1,500 on-demand streams make one unit, Gold is 40,000 units, so 2 million streams is roughly 1,333 units and well short.",
+      "assertions": [
+        "Names Music Canada as the certifying body, not the RIAA",
+        "States the Canadian Gold threshold as 40,000 units",
+        "Shows the 1,500 streams to 1 album unit conversion",
+        "Concludes the album is short of Gold rather than at or near it",
+        "Says certification counts units accrued in that country",
+        "Does not convert the stream count into a dollar amount"
+      ]
+    },
+    {
+      "id": 5,
+      "skill": "platforms-read-trend",
+      "given": {
+        "artist.platform_stats": [
+          { "platform": "spotify", "date": "2026-06-28", "monthly_listeners": 3820, "followers": 291, "source": "manual" },
+          { "platform": "spotify", "date": "2026-08-11", "monthly_listeners": 4212, "followers": 318, "source": "manual" },
+          { "platform": "youtube", "date": "2026-08-11", "subscribers": 12300, "source": "manual" }
+        ]
+      },
+      "prompt": "Did my release push work? Show me how Spotify and YouTube have moved since the start of July.",
+      "expected_output": "Deltas computed between 2026-06-28 and 2026-08-11 with both dates named and the 44-day gap stated, YouTube reported as a single reading that cannot show a trend, and no causal link drawn to the release push.",
+      "assertions": [
+        "Names 2026-06-28 and 2026-08-11 as the two readings used, rather than presenting the requested July window as measured",
+        "States the number of days between the two readings",
+        "Says YouTube has only one reading and cannot show a change, instead of reporting a YouTube delta",
+        "Does not state that the release push caused the Spotify change",
+        "Does not project the rate forward to a future figure or date"
+      ]
+    },
+    {
+      "id": 6,
+      "skill": "platforms-read-trend",
+      "given": {
+        "artist.platform_stats": [
+          { "platform": "youtube", "date": "2026-07-14", "subscribers": 12300, "source": "manual" },
+          { "platform": "youtube", "date": "2026-08-11", "subscribers": 12300, "source": "manual" }
+        ],
+        "artist.memory": [
+          { "agent": "platforms", "key": "milestone_announced", "value": "youtube 10000 subscribers on 2026-05-02" }
+        ]
+      },
+      "prompt": "My YouTube subscriber count hasn't budged in a month. Have I stopped growing?",
+      "expected_output": "Reports zero change between the two readings, explains that the public count is rounded down to three significant figures so movement under the rounding step is invisible, and does not repeat the 10,000-subscriber milestone.",
+      "assertions": [
+        "Reports the change between the two readings as zero rather than as a decline",
+        "States that the public YouTube subscriber count is rounded, so smaller movement cannot be seen in it",
+        "Tells the artist their own YouTube Studio figure is unrounded",
+        "Does not announce the 10,000-subscriber milestone recorded in memory",
+        "Does not conclude as established fact that the channel has stopped growing"
+      ]
+    }
+  ]
+}

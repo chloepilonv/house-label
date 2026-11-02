@@ -1,0 +1,12 @@
+-- Runs once, on the container's first boot, after POSTGRES_DB has been created.
+--
+-- The artist's database is POSTGRES_DB (music_label_artist). This file adds the
+-- second one: ours.
+--
+-- Two DATABASES, not two schemas in one, and that is the whole point. Postgres
+-- cannot join across databases, so the seam between the artist's rows and the
+-- catalog is enforced by the server rather than by everyone remembering. With
+-- two schemas, `join catalog.press_outlets` from an artist query works fine —
+-- which would make the separation a convention we could break by accident, in
+-- exactly the place where breaking it is most expensive.
+create database music_label_catalog;

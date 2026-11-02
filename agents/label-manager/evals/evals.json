@@ -1,0 +1,448 @@
+{
+  "agent": "manager",
+  "evals": [
+    {
+      "id": 1,
+      "skill": "manager-scope-project",
+      "given": {
+        "artist.profile": [
+          {
+            "artist_name": "Mireille Caron",
+            "country": "CA",
+            "region": "QC",
+            "preferred_locale": "fr"
+          }
+        ]
+      },
+      "prompt": "Je sors mon deuxième album au printemps prochain, probablement en avril. On presse du vinyle. Par où je commence?",
+      "expected_output": "One question, in French, with a count above it and one sentence of acknowledgement. No status table, no list of what is still to ask, no dates, nothing saved.",
+      "assertions": [
+        "Shows exactly one question, with a progress count, and nothing resembling an ANSWERED or STILL TO ASK block.",
+        "Acknowledges what the artist just said in one sentence before asking, in their own terms.",
+        "Asks in French, following artist.profile.preferred_locale.",
+        "Does not produce any phase, window, or date — scoping only.",
+        "Offers the profile's Quebec as a default for markets when that question comes, rather than adopting it silently.",
+        "Names no table, column, or shell command anywhere in the reply."
+      ]
+    },
+    {
+      "id": 2,
+      "skill": "manager-scope-project",
+      "given": {
+        "artist.profile": [
+          {
+            "artist_name": "Mireille Caron",
+            "country": "CA",
+            "region": "QC",
+            "preferred_locale": "fr"
+          }
+        ],
+        "artist.projects": [
+          {
+            "id": "44444444-4444-4444-8444-444444444444",
+            "title": "Deuxième album",
+            "project_type": "album",
+            "status": "scoping",
+            "street_date": "34 weeks after the run date",
+            "physical": "vinyl",
+            "recording_status": "mixing",
+            "markets": "{quebec,canada}",
+            "scope": "{\"merch\":\"no\",\"live\":\"release_party\",\"funding\":\"yes\",\"locale\":\"fr\"}"
+          }
+        ]
+      },
+      "prompt": "Finalement on presse pas de vinyle, juste du numérique. Change ça.",
+      "expected_output": "Confirms the change in the artist's words and asks before overwriting what is already saved, rather than writing silently and reporting it afterwards. Names the consequence — dropping vinyl moves the start of the plan — without producing a new plan here.",
+      "assertions": [
+        "Asks before overwriting the saved answer, and does not claim to have saved anything in the same turn it asks.",
+        "Says what changing this costs or frees: vinyl was the long pole, so the plan no longer starts three months out.",
+        "Does not produce a new plan or any dates — that is manager-plan-release.",
+        "Names no table, column, or shell command in the reply.",
+        "Offers the existing answers back rather than re-asking the whole set."
+      ]
+    },
+    {
+      "id": 3,
+      "skill": "manager-plan-release",
+      "given": {
+        "artist.profile": [
+          {
+            "artist_name": "Mireille Caron",
+            "country": "CA",
+            "region": "QC",
+            "preferred_locale": "fr"
+          }
+        ],
+        "artist.projects": [
+          {
+            "id": "33333333-3333-4333-8333-333333333333",
+            "title": "Deuxième album",
+            "project_type": "album",
+            "status": "scoping",
+            "street_date": "34 weeks after the run date",
+            "date_is_target": false,
+            "physical": "vinyl",
+            "recording_status": "mixing",
+            "markets": "{quebec,canada}",
+            "budget_amount": 8000,
+            "budget_currency": "CAD",
+            "scope": "{\"merch\":\"yes\",\"live\":\"release_party\",\"funding\":\"yes\",\"locale\":\"fr\"}"
+          }
+        ]
+      },
+      "prompt": "Donne-moi le plan au complet.",
+      "expected_output": "Every dated step of the release with calendar dates, grouped into phases in the order a record is made, the vinyl long pole setting the start at the 12-week end, a page written to .plans/, warnings of one sentence each, and nothing saved until asked.",
+      "assertions": [
+        "Answers with the release plan for the project in the database — NOT a plan found in a repo file. A run once returned the catalog crawl's block list to an artist who asked for their plan.",
+        "Every date shown is a calendar date. No W-9, W-4 or any week offset appears in the reply.",
+        "Derives the plan's start from the vinyl lead time and states which end of the 8–12 week range was used.",
+        "Contains, at minimum, steps for: finishing the record, mix and master, artwork and credits, ISRC/UPC, registering the songs, the presskit, press outreach, the editorial pitch, content, the upload to the distributor, the pre-save page, and release day.",
+        "Marks any date derived rather than sourced, and says once what the mark means — never once per step.",
+        "Names merch and manufacturing as having no owning department, rather than dropping them or assigning them to a department.",
+        "Cites 8–12 weeks for vinyl and states no lead time absent from knowledge/release-path.md.",
+        "Gives the path to the generated page.",
+        "Asks before saving, and does not describe what was saved in schema terms.",
+        "Every warning is one or two sentences.",
+        "Every step with a sourced range shows both ends, not one date: the pitch aims at four weeks and names Spotify's seven-day floor.",
+        "Names the departments the label does not have (merch, manufacturing, artwork) as a hiring decision routed to the Recruiting Agent, not as five separate shrugs.",
+        "Prices the plan in three tiers — bare, decent, full — and reads the $8,000 CAD against them: says which tier it covers and where the next dollar goes.",
+        "Every price is a vendor's own published figure with its source (45tours, !earshot, SubmitHub, Meta, Spotify Ads, DistroKid), never a recollection; a quantity that is the label's own default (150 credits, five weeks of Meta) is said to be one.",
+        "Vinyl and merch keep their line with 'no published price' and the reason — the plant quotes the run — rather than a made-up figure or a dropped step.",
+        "Never adds a USD line into the CAD total: a USD amount is reported apart, never converted.",
+        "Names a vendor as the source of a number, never as a decision — 'use 45tours' is the promotion department's call."
+      ]
+    },
+    {
+      "id": 4,
+      "skill": "manager-check-readiness",
+      "given": {
+        "artist.profile": [
+          {
+            "artist_name": "Mireille Caron",
+            "country": "CA",
+            "region": "QC",
+            "preferred_locale": "fr"
+          }
+        ],
+        "artist.projects": [
+          {
+            "id": "22222222-2222-4222-8222-222222222222",
+            "title": "Deuxième album",
+            "project_type": "album",
+            "status": "planned",
+            "street_date": "20 weeks after the run date",
+            "physical": "vinyl",
+            "recording_status": "mixing",
+            "markets": "{quebec,canada}",
+            "scope": "{\"lead_single\":\"Rivière\",\"locale\":\"fr\"}"
+          }
+        ],
+        "artist.project_milestones": [
+          {
+            "project_id": "22222222-2222-4222-8222-222222222222",
+            "milestone_key": "presskit_ready",
+            "title": "Presskit et communiqué finis",
+            "owner": "presskit",
+            "offset_days": -56,
+            "sourced": true,
+            "sort_order": 1
+          },
+          {
+            "project_id": "22222222-2222-4222-8222-222222222222",
+            "milestone_key": "delivered",
+            "title": "Disque téléversé au distributeur",
+            "owner": "distribution",
+            "offset_days": -28,
+            "sourced": true,
+            "sort_order": 2
+          }
+        ],
+        "artist.songs": [
+          {
+            "title": "Rivière",
+            "isrc": "CAA111100001"
+          },
+          {
+            "title": "Nord",
+            "isrc": null
+          },
+          {
+            "title": "Le pont",
+            "isrc": null
+          }
+        ],
+        "artist.presskit": [
+          {
+            "id": 1,
+            "short_bio": "Autrice-compositrice de Montréal.",
+            "long_bio": null
+          }
+        ]
+      },
+      "prompt": "Qu'est-ce qui me manque avant de pouvoir livrer l'album au distributeur?",
+      "expected_output": "The blocked gates in date order, each named by its milestone and dated, listing only missing items with the department that produces them, the ISRC shortfall as a count, and untracked deliverables marked unknown rather than missing.",
+      "assertions": [
+        "Each blocked gate carries a calendar date, never a week offset.",
+        "Shows the ISRC gap as a count of songs (1 of 3 assigned), not as a rounded status.",
+        "Names the producing department beside each missing item, in the artist's words rather than as a folder slug.",
+        "Does not report the lead single as undecided — it is named in the project's scope.",
+        "Does not list items that are already present.",
+        "Marks any deliverable nothing tracks as unknown, distinct from missing.",
+        "Does not comment on the quality of the existing short bio."
+      ]
+    },
+    {
+      "id": 5,
+      "skill": "manager-brief-department",
+      "given": {
+        "artist.profile": [
+          {
+            "artist_name": "Mireille Caron",
+            "country": "CA",
+            "region": "QC",
+            "preferred_locale": "fr"
+          }
+        ],
+        "artist.projects": [
+          {
+            "id": "11111111-1111-4111-8111-111111111111",
+            "title": "Deuxième album",
+            "project_type": "album",
+            "status": "planned",
+            "street_date": "34 weeks after the run date",
+            "date_is_target": false,
+            "physical": "vinyl",
+            "recording_status": "mixing",
+            "markets": "{quebec,canada}",
+            "budget_amount": 8000,
+            "budget_currency": "CAD",
+            "scope": "{\"locale\":\"fr\"}"
+          }
+        ],
+        "artist.project_phases": [
+          {
+            "project_id": "11111111-1111-4111-8111-111111111111",
+            "sort_order": 4,
+            "title": "Bâtir l'histoire et la pitcher",
+            "starts_week": -8,
+            "ends_week": 0
+          }
+        ],
+        "artist.project_milestones": [
+          {
+            "project_id": "11111111-1111-4111-8111-111111111111",
+            "milestone_key": "presskit_ready",
+            "title": "Presskit et communiqué finis",
+            "owner": "presskit",
+            "offset_days": -56,
+            "sourced": true,
+            "sort_order": 1
+          },
+          {
+            "project_id": "11111111-1111-4111-8111-111111111111",
+            "milestone_key": "press_pitched",
+            "title": "Presse et médias pitchés",
+            "owner": "press",
+            "offset_days": -35,
+            "sourced": true,
+            "sort_order": 2
+          },
+          {
+            "project_id": "11111111-1111-4111-8111-111111111111",
+            "milestone_key": "campaign_live",
+            "title": "Début de la campagne marketing",
+            "owner": "digital-marketing",
+            "offset_days": -28,
+            "sourced": true,
+            "sort_order": 3
+          }
+        ]
+      },
+      "prompt": "Donne-moi la phase 4.",
+      "expected_output": "Three departments share that window, so three asks — the reply lists each department with its own steps and dates and asks which one, instead of picking one.",
+      "assertions": [
+        "Reads the plan from the database rather than answering from memory or git history.",
+        "Names all three departments in the window and does not silently pick one.",
+        "States every deadline as a calendar date.",
+        "Names the departments the way the artist hears them, not by folder slug.",
+        "Does not invoke the receiving skill — naming it is the handoff."
+      ]
+    },
+    {
+      "id": 6,
+      "skill": "manager-build-credits",
+      "given": {
+        "artist.profile": [
+          {
+            "artist_name": "Mireille Caron",
+            "country": "CA",
+            "region": "QC",
+            "preferred_locale": "fr"
+          }
+        ],
+        "artist.releases": [
+          {
+            "id": "55555555-5555-5555-5555-555555555555",
+            "title": "Nightdrive",
+            "artist_name": "Mireille Caron",
+            "release_type": "ep",
+            "upc": "0123456789012",
+            "release_date": "2026-05-15",
+            "p_year": 2026,
+            "p_owner": "Mireille Caron",
+            "c_year": null,
+            "c_owner": null
+          }
+        ],
+        "artist.songs": [
+          {
+            "id": "66666666-6666-6666-6666-666666666666",
+            "title": "Nightdrive",
+            "isrc": "CAA011234567",
+            "release_id": "55555555-5555-5555-5555-555555555555"
+          }
+        ],
+        "artist.song_writers": [
+          {
+            "song_id": "66666666-6666-6666-6666-666666666666",
+            "name": "Mireille Caron",
+            "role": "composer_lyricist",
+            "ipi": "00123456789",
+            "share_percent": 50
+          },
+          {
+            "song_id": "66666666-6666-6666-6666-666666666666",
+            "name": "Luc Ferron",
+            "role": "composer",
+            "ipi": null,
+            "share_percent": 40
+          }
+        ],
+        "artist.release_credits": [
+          {
+            "release_id": "55555555-5555-5555-5555-555555555555",
+            "song_id": "66666666-6666-6666-6666-666666666666",
+            "name": "Ana Dupuis",
+            "role": "performer",
+            "instrument": "batterie",
+            "featured": false,
+            "ipn": null
+          }
+        ]
+      },
+      "prompt": "J'ai fini mon EP. Je dois faire le fichier de crédits pour l'envoyer à mon distributeur. C'est quoi qui me manque?",
+      "expected_output": "The gap list, in French, naming the department that closes each gap and what each one blocks. Not a finished credits document, because the credits are not complete.",
+      "assertions": [
+        "Reports that the writer shares total 90%, not 100%, as a number rather than as \"incomplete\".",
+        "Reports the missing © line as separate from the ℗ line, which is present.",
+        "Reports that Luc Ferron has no IPI and that this blocks the payment of his share.",
+        "Reports Ana Dupuis as a non-featured performer with no IPN, and says her performer society cannot pay her — not that the formatting is incomplete.",
+        "Names the department that closes each gap the way the artist hears it, never a table or a column name.",
+        "Says the credits must be complete before delivery to the distributor, because credits reach the platforms through that delivery.",
+        "Does not print a finished credits document while gaps remain.",
+        "Answers in French, following artist.profile.preferred_locale."
+      ]
+    },
+    {
+      "id": 7,
+      "skill": "manager-plan-release",
+      "given": {
+        "artist.profile": [
+          {
+            "artist_name": "Mireille Caron",
+            "country": "CA",
+            "region": "QC",
+            "preferred_locale": "fr"
+          }
+        ],
+        "artist.projects": [
+          {
+            "id": "77777777-7777-4777-8777-777777777777",
+            "title": "Nuit blanche",
+            "project_type": "ep",
+            "status": "scoping",
+            "street_date": "12 weeks after the run date",
+            "date_is_target": false,
+            "physical": "none",
+            "recording_status": "mixing",
+            "markets": "{quebec,canada}",
+            "budget_amount": null,
+            "budget_currency": null,
+            "scope": "{\"budget\":\"pas grand-chose\",\"lead_single\":\"Bruma\",\"locale\":\"fr\"}"
+          }
+        ]
+      },
+      "prompt": "J'ai pas beaucoup d'argent, honnêtement. Dis-moi ce que ça prendrait pour quelque chose de correct.",
+      "expected_output": "The three tiers with their totals — minimum, correct, complet — each line naming the vendor whose published price it is, then one question: which tier, or a number. No refusal, no request for a figure first, no vendor recommended.",
+      "assertions": [
+        "Runs plan.ts and answers with its budget block — never says a budget is required before a plan can exist.",
+        "Gives the three tiers as amounts in CAD with USD lines reported apart, and says what each tier buys in one line each (radio delivery, playlist credits, ads).",
+        "Every amount is attributed to the vendor whose published price it is; none is presented as an estimate the label made up.",
+        "Says that the editorial pitch to Spotify costs nothing.",
+        "Ends by asking which tier, or what number, to plan against — and offers that $50 would still buy the minimum tier.",
+        "Does not recommend a vendor ('utilise 45tours') — names the promotion department as the one who picks.",
+        "Answers in French."
+      ]
+    },
+    {
+      "id": 8,
+      "skill": "manager-learn-voice",
+      "given": {
+        "artist.profile": [
+          {
+            "artist_name": "Mireille Caron",
+            "country": "CA",
+            "region": "QC",
+            "preferred_locale": "fr",
+            "languages": [
+              "fr",
+              "en"
+            ]
+          }
+        ],
+        "artist.voice": []
+      },
+      "prompt": "Mes pitches sonnent comme si une IA les avait écrits. Peux-tu apprendre comment j'écris à partir de mes courriels ?",
+      "expected_output": "Points at `houselabel voice learn --gmail` or `--from <folder>` first, says what it reads (sent mail only) and where the emails go; falls back to reading emails by hand only if the command cannot run, and then ends with the houselabel voice set command for the artist to run.",
+      "assertions": [
+        "Names `houselabel voice learn` as the first path and says it reads sent mail only, never the inbox.",
+        "Says the emails go to the artist's model provider once (or stay local with Ollama) and that the file is shown before anything is saved.",
+        "Falls back to reading emails by hand only when the command cannot run, and then asks for at least ten, in both French and English.",
+        "Never invents a sample and never writes artist.voice itself — the artist runs the save.",
+        "Answers in French, following artist.profile.preferred_locale."
+      ]
+    },
+    {
+      "id": 9,
+      "skill": "manager-weekly-recap",
+      "given": {
+        "artist.profile": [
+          {
+            "artist_name": "Mireille Caron",
+            "country": "CA",
+            "region": "QC",
+            "preferred_locale": "fr"
+          }
+        ],
+        "artist.projects": [
+          {
+            "title": "Nuit blanche",
+            "project_type": "ep",
+            "status": "planned",
+            "street_date": "2026-11-13"
+          }
+        ]
+      },
+      "prompt": "Qu'est-ce que j'ai fait la semaine passée pis qu'est-ce qui s'en vient cette semaine? Pis envoie-moi ça chaque lundi.",
+      "expected_output": "Runs `houselabel recap` and relays what it prints — done last week, due this week with a day on each line, the overdue ones, the numbers — in French; then offers the Monday email with `houselabel recap --schedule` and says it needs one more Google permission, asked once, and that it runs from the artist's own machine.",
+      "assertions": [
+        "Runs the recap script rather than assembling the recap from prose or from the plan table by hand.",
+        "Every due or overdue line carries a day (e.g. 'mer. 28'), never a week offset like W-2.",
+        "Names the owner of each step the way the artist hears it ('Promotion', 'Distribution', 'Toi'), never a slug or a table.",
+        "Offers the Monday email once, names `houselabel recap --schedule`, and says the send permission is asked once and goes to the artist's own address only.",
+        "Says the schedule runs on the artist's machine and what happens if it is asleep on Monday morning.",
+        "Answers in French, following artist.profile.preferred_locale."
+      ]
+    }
+  ]
+}

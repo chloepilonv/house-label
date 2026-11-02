@@ -1,0 +1,60 @@
+name: Agent format contract
+
+# Every push and PR: verify agents/ still matches the format contract in
+# agents/README.md. This is the mechanical half — section order, skill naming,
+# spec-only SKILL.md frontmatter, `data:` resolution against data/, knowledge
+# dating, eval coverage, staff-table mirroring.
+#
+# The half that needs judgment (hollow Process sections, open questions deleted
+# rather than answered, assertions that can't fail) is /recruit-audit, which is
+# run by a human. See agents/agent-recruitor/skills/recruit-audit/.
+#
+# No secrets and no database: sync.ts reads the filesystem only.
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+concurrency:
+  group: agents-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      # sync.ts imports nothing outside the standard library, so the install is
+      # only here to keep the run reproducible against the committed lockfile.
+      - run: bun install --frozen-lockfile
+
+      # One step, because `agents:check` now covers both halves: the format
+      # contract, and whether the generated surfaces are current.
+      #
+      # It used to cover only the first, and staleness was caught here by
+      # running the writer and diffing. That worked, but the feedback was a push
+      # and a CI round-trip away — it broke three PRs in one afternoon, each
+      # time for a `.claude/agents/*.md` that a local `agents:check` had just
+      # called clean. The check now compares the same output without writing it,
+      # so the failure arrives in one second on the machine that caused it.
+      #
+      # agents/README.md is in scope deliberately: sync once appended a column
+      # per run there, and the contract half could not see it — the staff-table
+      # check is a substring match, which a duplicated column still satisfies.
+      # Idempotence is the property, and comparing the regenerated text is the
+      # only honest test of it.
+      - name: Verify the format contract and the generated surfaces
+        run: bun run agents:check
+
+      # The check is read-only, so a tree that was clean at checkout must still
+      # be clean. This catches the one thing it cannot check about itself:
+      # a --check path that writes something by accident.
+      - name: Verify the check wrote nothing
+        run: git diff --exit-code

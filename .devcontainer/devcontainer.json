@@ -1,0 +1,36 @@
+// A fresh machine in a box: Ubuntu + Bun + Claude Code + its own Docker.
+// VS Code → "Dev Containers: Reopen in Container", then run the README
+// "Four steps" BY HAND — bun install, bun link, houselabel init…
+// The db runs INSIDE this container, separate from any host-side Postgres.
+// Docs: https://code.claude.com/docs/en/devcontainer
+{
+  "name": "house-label",
+  "build": { "dockerfile": "Dockerfile" },
+
+  "features": {
+    // Node first — the claude-code feature installs through npm.
+    "ghcr.io/devcontainers/features/node:2": {},
+    // Nested Docker daemon so `bun run dev:up` works in here. Runs privileged.
+    "ghcr.io/devcontainers/features/docker-in-docker:4": {},
+    "ghcr.io/anthropics/devcontainer-features/claude-code:1.0": {}
+  },
+
+  // Keep the Claude Code sign-in across rebuilds: one volume per project,
+  // and CLAUDE_CONFIG_DIR so ~/.claude.json lands inside it too.
+  "mounts": [
+    "source=claude-code-config-${devcontainerId},target=/home/vscode/.claude,type=volume"
+  ],
+  "containerEnv": {
+    "CLAUDE_CONFIG_DIR": "/home/vscode/.claude"
+  },
+  // `bun link` puts `houselabel` in ~/.bun/bin. Bun itself is in /usr/local
+  // (see Dockerfile), so nothing else puts that folder on PATH and README
+  // step 1 ended in "houselabel: command not found".
+  "remoteEnv": {
+    "PATH": "${containerEnv:PATH}:/home/vscode/.bun/bin"
+  },
+
+  "remoteUser": "vscode"
+  // No postCreateCommand on purpose: installing and seeding by hand IS the
+  // fresh-environment validation.
+}

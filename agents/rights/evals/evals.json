@@ -1,0 +1,125 @@
+{
+  "agent": "rights",
+  "evals": [
+    {
+      "id": 1,
+      "skill": "rights-register-orgs",
+      "prompt": "I'm a rapper in Montreal, I write and perform everything myself. Which organizations should I be signed up with?",
+      "expected_output": "A per-side checklist: SOCAN plus the mechanical choice on the composition side; on the master side the performer neighbouring-rights choice presented as a choice \u2014 ACTRA RACS, Artisti or Re:Sound direct \u2014 plus Panorama if they own their masters, and never CONNECT; plus SoundExchange and The MLC as cross-border, sorted by priority, with the dual-role banner. Being in Montreal changes the language of the answer, not which societies are offered.",
+      "assertions": [
+        "Performer neighbouring rights is offered as a choice between ACTRA RACS, Artisti and Re:Sound direct, not routed by province",
+        "Does not recommend CONNECT, which represents major labels and takes no individual members",
+        "Being in Quebec changes the language of the answer, not which organizations are listed",
+        "Includes SoundExchange and The MLC as cross-border orgs for a Canadian artist",
+        "SOCAN RR and CMRRA are presented as an exclusive choice, not both recommended",
+        "Organizations are grouped by copyright side and sorted by priority",
+        "Shows the dual-role banner for an artist who both writes and performs",
+        "Sync appears as informational, never as a registration item",
+        "Does not state a fee or signup URL as current fact"
+      ]
+    },
+    {
+      "id": 2,
+      "skill": "rights-register-orgs",
+      "prompt": "What should I register with?",
+      "expected_output": "Stops and asks the artist for their country rather than producing a checklist, because country inference can return null and a Canadian and an American share no societies at all.",
+      "assertions": [
+        "Asks for country instead of guessing",
+        "Explains that the recommendation changes based on the answer",
+        "Produces no org list until the profile is complete"
+      ]
+    },
+    {
+      "id": 3,
+      "skill": "rights-register-orgs",
+      "prompt": "Mark SOCAN as registered.",
+      "given": {
+        "artist.profile": {
+          "country": "CA",
+          "region": "QC",
+          "preferred_locale": "fr"
+        },
+        "artist.registrations": [
+          {
+            "org_slug": "socan",
+            "status": "in_progress",
+            "member_id": null
+          },
+          {
+            "org_slug": "ascap",
+            "status": "registered",
+            "member_id": "1234567"
+          }
+        ]
+      },
+      "expected_output": "Refuses the transition because SOCAN's required member_id is empty, names it, reports the status still as in_progress, and does not re-ask for the IPI already on the profile.",
+      "assertions": [
+        "Refuses to set registered while a required field is empty, and names each missing field",
+        "Reports SOCAN as still in progress rather than confirming an update",
+        "Reuses an IPI already captured for another society rather than re-asking",
+        "Reports progress per copyright side and overall",
+        "Status labels appear in one language only, the artist's"
+      ]
+    },
+    {
+      "id": 4,
+      "skill": "rights-manage-catalog",
+      "given": {
+        "artist.songs": [
+          {
+            "title": "Nocturne",
+            "isrc": "CAK401800123",
+            "iswc": null,
+            "artists": [
+              "Lune Rousse"
+            ],
+            "source_label": null
+          }
+        ]
+      },
+      "prompt": "Here's my DistroKid export, import it.",
+      "expected_output": "Shows the privacy disclosure, extracts with MISSING sentinels for unreadable fields, dedupes multi-store lines to one row per song, blocks on any MISSING title, then shows per-row merge/create/skip decisions before committing anything.",
+      "assertions": [
+        "The privacy disclosure appears before extraction begins",
+        "Unreadable fields are the literal uppercase MISSING, never an invented value",
+        "Multi-store and multi-territory lines collapse to one row per unique song",
+        "Import is blocked while any row has a MISSING title, with the count named",
+        "Every match decision is shown per row before commit",
+        "Merge fills empty fields only and never overwrites existing artist data",
+        "Warns about the first-sheet-only, 60k-character, and 15 MB limits on a large file"
+      ]
+    },
+    {
+      "id": 5,
+      "skill": "rights-manage-catalog",
+      "given": {
+        "artist.profile": {
+          "artist_name": "Lune Rousse",
+          "country": "CA"
+        },
+        "artist.songs": []
+      },
+      "prompt": "Add my new single. Writers are me at 60% and my producer at 30%.",
+      "expected_output": "Saves the song with the title, warns in red that writer shares total 90% rather than 100%, does not block the save, and flags missing identifiers.",
+      "assertions": [
+        "The save succeeds despite shares not totalling 100%",
+        "A visible share-total warning names the actual total",
+        "Missing ISRC and ISWC appear as hygiene flags, not as blocked fields",
+        "No identifier is invented to complete the record"
+      ]
+    },
+    {
+      "id": 6,
+      "skill": null,
+      "prompt": "My producer says he wants 20%. Is that normal? And does that come out of my songwriting?",
+      "expected_output": "Names the side first: producer points come off the MASTER, not the composition, so a producer taking 20% of the master leaves the songwriting split untouched. Says 20% is above the commonly quoted 2-5 point range but that the range is a convention with no primary source and not a rule. Refuses to say what the artist should agree to because that is a negotiation. Routes the recording of whatever they settle on to rights-manage-catalog. Writes nothing.",
+      "assertions": [
+        "Says explicitly that producer points come off the master and not the composition",
+        "Gives the conventional range as an unsourced convention, never as a rule or a default",
+        "Declines to advise what to agree to, and says why - it is a negotiation, not a fact",
+        "Routes the recording of the agreed split to rights-manage-catalog rather than saving anything",
+        "Attaches the knowledge file or URL behind each factual claim"
+      ]
+    }
+  ]
+}

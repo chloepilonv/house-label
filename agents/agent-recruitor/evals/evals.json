@@ -1,0 +1,131 @@
+{
+  "agent": "recruit",
+  "evals": [
+    {
+      "id": 2,
+      "skill": "recruit-agent",
+      "prompt": "Set up a sync licensing department — pitching our songs to music supervisors for film and TV.",
+      "expected_output": "Runs steps 1-3, then STOPS: research shows music-supervisor contact data is paywalled and login-walled, so the department is blocked on a dataset that does not exist. Names what would unblock it and proposes a data/ branch first. Does not scaffold a folder whose every skill leans on a missing table.",
+      "assertions": [
+        "Stops at gate 1 with a proposed slug and staff-member name before creating anything",
+        "Reports the music-supervisor dataset as paywalled/unstable and treats that as a run-ending finding, not a caveat",
+        "Does not create agents/sync/ or any skill directory",
+        "Names sync licensing as a real gap and a data/ branch, citing the settled verdict in label-departments.md",
+        "Does not write SQL or invent a schema for the missing table"
+      ]
+    },
+    {
+      "id": 3,
+      "skill": "recruit-agent",
+      "prompt": "I want an agent that listens to the artist's demos and suggests which one to release as the single.",
+      "expected_output": "Declines. Names line 1 — no agent makes music, and A&R judgment on the art is out of scope — and offers the nearest thing in scope, e.g. the Platforms Agent comparing platform performance of already-released tracks.",
+      "assertions": [
+        "Refuses and names which of the three scope lines it crosses",
+        "Offers a concrete in-scope alternative",
+        "Writes no files"
+      ]
+    },
+    {
+      "id": 4,
+      "skill": "recruit-research",
+      "prompt": "Before we build a content-creator department, go find out how independent artists actually make their short-form content, what tools they use, and whether we'd need to crawl anything.",
+      "expected_output": "A findings brief in four parts — how the work is done (sourced, CA/US sectioned where it differs), a tools table checked against the 49 existing catalog.tools rows and marked already-in-catalog vs proposed, a dataset verdict with reasoning, and the open questions research could not close.",
+      "assertions": [
+        "Every claim in the first three parts carries a URL",
+        "Canva is identified as already in catalog.tools rather than proposed as new",
+        "Proposed tools name one of the nine existing categories, or explicitly flag that a tenth is needed",
+        "Each proposed tool says what it does that the existing catalog row does not",
+        "Notes free tier or its absence for each proposed tool",
+        "States a filter-or-read verdict on whether a catalog.<slug>_<noun> table is needed, with a reason",
+        "Unsourced items appear under open questions, not as softened claims in the findings"
+      ]
+    },
+    {
+      "id": 5,
+      "skill": "recruit-evaluate",
+      "prompt": "Run the promotion agent's evals and tell me whether it actually works.",
+      "expected_output": "Both arms of every case run, an assertion grid with the with-agent and baseline results side by side, the real generated outputs shown for judgment, non-discriminating assertions called out, each failure routed to a specific file, plus a separate freshness list. Ends by asking the user to judge the outputs.",
+      "assertions": [
+        "Every case is run twice: with the department, and ablated — its markdown withheld while data access, tools, and model stay identical",
+        "Does not attempt a no-agent baseline, and says why an empty room is unobtainable in this repo",
+        "No pass rate is reported without its baseline alongside",
+        "Assertions passing in both arms are flagged as non-discriminating rather than counted",
+        "The actual generated outputs are shown, not only the grades",
+        "Each failure names the specific file to change and why that file rather than another",
+        "Stale last_verified dates are reported as research tasks, separate from eval failures",
+        "Repeated work across runs is identified as a candidate for a bundled script",
+        "Ends by waiting for the user's judgment rather than declaring the agent done"
+      ]
+    },
+    {
+      "id": 6,
+      "skill": "recruit-evaluate",
+      "prompt": "That fixed case 2. Ship it.",
+      "expected_output": "Re-runs the whole suite rather than the one case, diffs against the previous iteration, surfaces any regression first, and only then reports whether the fix held.",
+      "assertions": [
+        "Re-runs every case, not only the one that was failing",
+        "Compares against the previous iteration and surfaces regressions before improvements",
+        "Does not fix a failure by adding an emphatic MUST to the guidelines",
+        "Declines to declare completion while a regression is outstanding"
+      ]
+    },
+    {
+      "id": 7,
+      "skill": "recruit-audit",
+      "prompt": "Audit the agents folder against the format contract.",
+      "expected_output": "A table of drift grouped by agent, mechanical/packaging failures first, each row naming a specific file and section with a proposed fix. If nothing drifted, one line saying so plus what was checked.",
+      "assertions": [
+        "Ranks top-level frontmatter key violations above section-order findings",
+        "Every finding names a specific file path, not a category of files",
+        "Proposes a fix per finding without rewriting the files",
+        "A finding repeated across three or more agents is reported once as a template bug"
+      ]
+    },
+    {
+      "id": 8,
+      "skill": "recruit-dataset",
+      "prompt": "The booking department needs real venue coverage — Montreal and Toronto to start. Set up the dataset.",
+      "expected_output": "Anchors the topic to catalog.booking_venues, then stops at the first gate with a proposed field contract for validation. Continued, it presents a scouted source table (id, url, kind, scope, trust, why) for line-by-line validation, stages survivors as pending_review via catalog:sources, pilots one catalog:refresh booking run, and reports per-source yields with sample rows. Nothing is activated and no venue data is written without the user's word.",
+      "assertions": [
+        "Proposes the field contract and stops for validation before naming any source",
+        "Every scouted source carries a URL and a kind (index or detail)",
+        "Stages sources as pending_review and activates none without the user's word",
+        "Invents no venue rows — catalog rows are described as arriving only from the crawl",
+        "Describes promotion as sources being active for the Monday run, not as editing the workflow or adding a new cron"
+      ]
+    },
+    {
+      "id": 9,
+      "skill": "recruit-overhaul",
+      "prompt": "Overhaul the platforms department.",
+      "expected_output": "The artist's own intake first — what they want each staff-table column to say — then scripts/audit.ts platforms run for the facts, then a comparison. Stops at step 4 with a plan: corrected Description/Input/Output and which of explain-metric, log-numbers and read-trend are tasks against which fold into the department's own conversation. No files written before that.",
+      "assertions": [
+        "Asks the artist what they want each column to say BEFORE auditing — step 1 is intake, not inspection",
+        "Runs scripts/audit.ts rather than describing the department from reading files",
+        "Reports the first House Label prior art, when available, in both directions, and flags that ours fetches nothing on purpose",
+        "Stops at step 4 with a plan rather than deciding the task split alone",
+        "Derives the split from Input and Output, not from the existing skill names",
+        "Writes no files before step 5",
+        "Prints copy-pasteable commands at step 8 and waits, instead of declaring it works",
+        "Names loop-verifier as the checker, never itself",
+        "Proposes feat-modes-platforms and asks for validation"
+      ]
+    },
+    {
+      "id": 10,
+      "skill": "recruit-debrief",
+      "prompt": "Read the transcript, that conversation with digital-marketing was bad.",
+      "expected_output": "Reads the newest .transcripts/digital-marketing-*.jsonl in full, names the FIRST turn that went wrong by number with its phase and pending question, routes the cause to one file, fixes it, runs the tests, and gives one command to verify. Never asks the artist to paste anything.",
+      "assertions": [
+        "Lists .transcripts/ and reads the newest digital-marketing file rather than asking for a paste",
+        "Names a turn number, its phase, and what the fields say — not just the words",
+        "Identifies the FIRST bad turn, not only the one the artist complained about",
+        "Routes the cause to a specific file (offers.ts, questions.ts, session.ts, load.ts, or a knowledge page)",
+        "Runs bun run test and agents:check after the fix",
+        "Ends with one command the artist runs and what they should see",
+        "Proposes an eval case built from the artist's own words",
+        "Reports any second defect the artist did not mention"
+      ]
+    }
+  ]
+}

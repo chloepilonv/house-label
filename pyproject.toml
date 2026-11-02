@@ -1,0 +1,12 @@
+# The one Python entry point in this repo: data/catalog/query.py, the read path
+# for an agent that has no database. Standard library only — no dependencies —
+# so this file exists for `uv run`, which also fetches a Python when the machine
+# has none (AGENTS.md → Tooling: Python goes through uv).
+[project]
+name = "house-label"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = []
+
+[tool.uv]
+package = false

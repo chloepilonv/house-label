@@ -1,0 +1,55 @@
+.DS_Store
+node_modules
+.venv/
+.env
+.env.*
+!.env.example
+.claude/settings.local.json
+.claude/worktrees/
+# Written by the devcontainer CLI on every build; the features are pinned by
+# major version in devcontainer.json already.
+.devcontainer/devcontainer-lock.json
+
+# Built and pulled catalog snapshots. GitHub is not a storage device — these
+# live on object storage; this folder is just the local working copy.
+
+# Eval run output. The cases (evals/evals.json) are a spec and are committed;
+# what came out of running them is large and regenerable — `/recruit-evaluate`
+# rebuilds it. Keeping it out means a knowledge fix diffs as a knowledge fix.
+agents/*/evals/runs/
+
+# Generated release plans. One HTML page per project, written by
+# manager-plan-release and overwritten on every regeneration. The plan itself
+# lives in artist.project_milestones; this is the readable copy, and it is the
+# artist's private data besides.
+.plans/
+
+# Conversation transcripts, written only when `houselabel --log` asks for them.
+# These are the artist talking to their own label: what they earn, what they
+# have been offered, what they are worried about. They exist so a bug can be
+# reported with evidence instead of retyped from memory, and they never leave
+# the machine that wrote them.
+.transcripts/
+
+# Loop state files. A loop (doc/templates/loop.template.md) keeps its memory in
+# <name>-loop-STATE.md at the repo root; it is re-derived from a run every
+# cycle and is nobody's source of truth. The loop itself lives next to what it
+# drives (agents/presskit/evals/loop.md).
+*-loop-STATE.md
+# The artist's website, built by `bun run website:build`. The page is
+# regenerable from the tables and carries the artist's photos inline — it is
+# their data, and it is 1–2 MB of base64 besides. `.cache/` is the resized
+# images that build reuses.
+content/
+.cache/
+doc/.vitepress/dist
+doc/.vitepress/cache
+.vercel
+.env*
+/.vercel
+
+# never commit a database or a log — except the catalog snapshot, which IS the
+# shipped catalog: data/catalog/catalog.sqlite, rebuilt weekly by crawl.yml.
+*.sqlite
+!data/catalog/catalog.sqlite
+*.log

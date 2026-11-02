@@ -1,0 +1,64 @@
+{
+  "version": "2026-11-01",
+  "bytes": 737280,
+  "sha256": "a2da76f85631057a219b13895e3b0b277a087b5e5be743513a4e7999a3eb0d70",
+  "built_at": "2026-11-01T23:19:03.314Z",
+  "row_counts": {
+    "press_outlets": 235,
+    "promotion_radio_stations": 130,
+    "promotion_playlists": 131,
+    "promotion_radio_services": 12,
+    "promotion_pitch_services": 11,
+    "distribution_services": 39,
+    "distribution_stores": 35,
+    "rights_orgs": 16,
+    "tools": 43,
+    "crawl_sources": 41
+  },
+  "completeness": {
+    "press_outlets": "partial",
+    "promotion_radio_stations": "partial",
+    "promotion_playlists": "partial",
+    "promotion_radio_services": "partial",
+    "promotion_pitch_services": "partial",
+    "distribution_services": "partial",
+    "distribution_stores": "complete",
+    "rights_orgs": "partial",
+    "tools": "complete",
+    "crawl_sources": "complete"
+  },
+  "array_columns": {
+    "press_outlets": [
+      "genre_fit"
+    ],
+    "promotion_radio_stations": [
+      "languages",
+      "genre_fit",
+      "reports_to"
+    ],
+    "promotion_playlists": [
+      "genre_fit"
+    ],
+    "promotion_radio_services": [],
+    "promotion_pitch_services": [],
+    "distribution_services": [
+      "docs_required",
+      "payout_methods",
+      "territories",
+      "artwork_formats",
+      "audio_formats",
+      "grant_eligibility_ca",
+      "not_stated"
+    ],
+    "distribution_stores": [
+      "regions"
+    ],
+    "rights_orgs": [
+      "royalty_types",
+      "for_whom",
+      "registration_requirements"
+    ],
+    "tools": [],
+    "crawl_sources": []
+  }
+}
