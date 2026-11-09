@@ -75,7 +75,7 @@ A price that changed, an outlet that closed, a contact who moved desk:
 
 1. Ask the department where the row came from. It shows the source link and
    the last-verified date.
-2. Open that page. If the page changed, the next weekly crawl usually catches
+2. Open that page. If the page changed, the next crawl usually catches
    it; if the page is gone or the row was misread, it will not.
 3. Report it at
    [github.com/chloepilonv/house-label/issues](https://github.com/chloepilonv/house-label/issues)

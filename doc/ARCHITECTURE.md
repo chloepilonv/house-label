@@ -174,7 +174,7 @@ The catalog **is** `data/catalog/catalog.sqlite`, committed in git.
 - **Read:** [`client.ts`](../data/catalog/client.ts) `openCatalog()` opens the
   file read-only. No login, no server, works offline. `CATALOG_FILE` swaps in a
   scratch copy for evals.
-- **Write:** the weekly crawl loads the file into a throwaway workshop Postgres
+- **Write:** the crawl (run by hand) loads the file into a throwaway workshop Postgres
   (`catalog:load`), crawls and enriches, exports it back (`catalog:build`),
   checks `catalog:privacy`, and opens a PR.
 - **Ship = merge.** A catalog change is a reviewed git diff;

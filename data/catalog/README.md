@@ -116,7 +116,7 @@ bun run catalog:privacy            # desks only (--scrub fixes)
 bun run catalog:sql "select count(*) from tools"   # quick query of the file
 ```
 
-The weekly crawl ([`crawl.yml`](../../.github/workflows/crawl.yml)) runs load →
+The crawl ([`crawl.yml`](../../.github/workflows/crawl.yml), run by hand from the Actions tab) runs load →
 refresh → enrich distribution → build → privacy, then opens a PR on
 `chore/catalog-snapshot`. **Merging it is what reaches artists.** Secrets:
 `TINYFISH_API_KEY`, `ANTHROPIC_API_KEY` (+ optional `ANTHROPIC_WORKSPACE_ID`,
@@ -125,7 +125,7 @@ refresh → enrich distribution → build → privacy, then opens a PR on
 ## The shipped file — `catalog.sqlite`
 
 One SQLite file, 10 tables, ~720 KB, committed in this folder and
-rebuilt every Monday by `crawl.yml`. The list is
+rebuilt by `crawl.yml` when it is run. The list is
 [`publish/datasets.ts`](./publish/datasets.ts). Read it with `uv run data/catalog/query.py`
 (uv is installed by `setup-label.sh`; the script itself has no dependencies). It is what an agent reads when it has no
 database: Claude Cowork, Claude Desktop, a Claude Project. `catalog.sqlite.manifest.json`
@@ -142,7 +142,7 @@ beside it carries the build date, the row counts and the sha256.
 | stores | distribution_stores | a store: via distributor or direct upload |
 | rights | rights_orgs | a collection society: who it is for, cost, signup |
 | tools | tools | the apps the label points at |
-| — | crawl_sources | not for agents: the pages the weekly crawl reads |
+| — | crawl_sources | not for agents: the pages the crawl reads |
 
 ```bash
 uv run data/catalog/query.py --datasets

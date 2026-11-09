@@ -23,7 +23,7 @@ Every department is one folder under `agents/`.
 
 data/
 - artist/  - the artist's own data. Ships empty; agents fill it through conversation.
-- catalog/ - **our** data: sources of info, weekly crawled with tinyfish,
+- catalog/ - **our** data: sources of info, crawled on demand with tinyfish,
   puppeteer fallback. **The catalog is one file, `data/catalog/catalog.sqlite`**,
   committed with the repo.
 
@@ -36,7 +36,7 @@ data/
 > Writes go through **the workshop**, a throwaway Postgres named by
 > `CATALOG_DATABASE_URL` (Docker locally, a service container in CI):
 > `catalog:load` fills it from the file, the crawl and seeds write into it,
-> `catalog:build` writes the file back. The weekly crawl opens a PR with the
+> `catalog:build` writes the file back. The crawl (run by hand) opens a PR with the
 > new file; merging it is what reaches artists. See `data/catalog/workshop.ts`.
 >
 > **`data/artist` is the opposite**: the artist's own Postgres (`DATABASE_URL`),
