@@ -22,9 +22,10 @@ name: Refresh catalog
 # and how often each SOURCE is due is `crawl_sources.cadence_days`. Adding a
 # crawl is an INSERT; changing a cadence is an UPDATE. Neither touches this file.
 
+# The Monday schedule is paused: a clone has none of the secrets above, so
+# every scheduled run failed. Run it by hand from the Actions tab. To resume,
+# put back:  schedule: [{ cron: "0 6 * * 1" }]
 on:
-  schedule:
-    - cron: "0 6 * * 1" # Mondays 06:00 UTC — sources due less often self-skip
   workflow_dispatch:
     inputs:
       force:

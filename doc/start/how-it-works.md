@@ -21,7 +21,7 @@ with a link next to it.
 | | **Yours** | **Ours** |
 |---|---|---|
 | What | profile, songs, splits, plan dates, numbers, the documents | distributors, media contacts, radio stations, playlists |
-| Where | a database on your machine + your Google Drive | a catalog we crawl weekly, read live, read-only |
+| Where | a database on your machine + your Google Drive | a catalog we crawl and refresh, read live, read-only |
 | Who writes | you, through the agents | the crawler |
 | Leaves your machine? | only what you send to your model provider in a conversation | n/a — it is public data |
 
