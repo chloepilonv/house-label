@@ -2,6 +2,10 @@
 
 **Status:** 🧪 beta
 
+::: info Note
+This department helps you prepare and stay organized. It is not legal advice and it can make mistakes. Before you sign a contract, set splits or register rights, please check with a qualified professional, such as a lawyer, a publisher or your rights society.
+:::
+
 > Which societies to join, which numbers to get, and a clean list of your songs with their splits — so every dollar a play generates has a door to reach you through.
 
 ## In a real label

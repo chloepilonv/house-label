@@ -7,6 +7,8 @@
 
 > **Beta.** The `houselabel` command and the setup are still changing. The agents and skills are the solid part: open the repo folder in Claude Code or Claude Desktop and talk to them directly.
 
+> **Disclaimer.** House Label is a community open-source project, not a lawyer, accountant or manager, and it can make mistakes. For rights, contracts, money, tax or any other sensitive subject, please check with a qualified professional.
+
 ## About
 
 House Label is the first agentic music label: a record label made of agents,

@@ -71,7 +71,10 @@ export default defineConfig({
       },
     ],
     socialLinks: [{ icon: "github", link: "https://github.com/chloepilonv/house-label" }],
-    footer: { message: "Beta · Quebec validated · Canada and the US next." },
+    footer: {
+      message: "Beta · Quebec validated · Canada and the US next.",
+      copyright: "House Label is a community open-source project, not a lawyer, accountant or manager, and it can make mistakes. For rights, contracts, money, tax or any other sensitive subject, please check with a qualified professional.",
+    },
     search: { provider: "local" },
     outline: [2, 3],
   },
